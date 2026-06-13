@@ -11,7 +11,7 @@ const solidStyles = {
 };
 
 const panelHeight =
-  "min-h-[220px] sm:min-h-[260px] lg:min-h-[300px]";
+  "min-h-[7.5rem] sm:min-h-[200px] lg:min-h-[300px]";
 
 function ImagePanel({ imageUrl, alt }: { imageUrl: string; alt: string }) {
   return (
@@ -33,13 +33,13 @@ function SolidPanelBlock({ panel }: { panel: Extract<PrinciplesPanel, { type: "s
 
   return (
     <div
-      className={`flex h-full w-full flex-col justify-end p-4 sm:p-5 lg:p-6 ${panelHeight} ${solidStyles[panel.variant]}`}
+      className={`flex h-full w-full flex-col justify-end p-2 sm:p-5 lg:p-6 ${panelHeight} ${solidStyles[panel.variant]}`}
     >
-      <h3 className={`font-display text-base font-bold leading-snug sm:text-lg ${textClass}`}>
+      <h3 className={`font-display text-[0.625rem] font-bold leading-tight sm:text-lg sm:leading-snug ${textClass}`}>
         {panel.title}
       </h3>
       {panel.subtitle && (
-        <p className={`mt-1.5 max-w-xs text-xs leading-relaxed sm:text-sm ${subClass}`}>
+        <p className={`mt-1 max-w-xs text-[0.5625rem] leading-snug sm:mt-1.5 sm:text-sm sm:leading-relaxed ${subClass}`}>
           {panel.subtitle}
         </p>
       )}
@@ -66,15 +66,15 @@ function PeoplePrinciplesSection() {
       </div>
 
       <div className="mx-auto mt-6 max-w-6xl lg:mt-8">
-        {/* Top row — equal-height 3 columns */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 lg:items-stretch">
+        {/* Top row — 3 columns on all breakpoints (matches desktop layout) */}
+        <div className="grid grid-cols-3 items-stretch">
           {principlesTopRow.map((panel) => (
             <Panel key={panel.id} panel={panel} />
           ))}
         </div>
 
-        {/* Bottom row — equal-height 3 columns */}
-        <div className="mt-0 grid grid-cols-1 lg:grid-cols-3 lg:items-stretch">
+        {/* Bottom row — 3 columns on all breakpoints */}
+        <div className="mt-0 grid grid-cols-3 items-stretch">
           {principlesImpactRow.map((panel) => (
             <Panel key={panel.id} panel={panel} />
           ))}

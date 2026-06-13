@@ -3,8 +3,11 @@
 export const siteLogoUrl =
   "https://res.cloudinary.com/dps46p3m8/image/upload/v1781192857/QFLogo-Bsun1Dcj_tzycu8.png";
 
-export const siteLogoWhiteUrl =
-  "https://res.cloudinary.com/dps46p3m8/image/upload/v1781192854/QFwhite-DghykY62_m1pfwk.png";
+export const footerLogoUrl =
+  "https://res.cloudinary.com/dps46p3m8/image/upload/v1781370587/QFLogo-Bsun1Dcj_tzycu8-removebg-preview_kynkat.png";
+
+export const loadingScreenLogoUrl =
+  "https://res.cloudinary.com/dps46p3m8/image/upload/v1781192857/favIcon_ox2js2.png";
 
 export const indiaMapUrl =
   "https://res.cloudinary.com/dps46p3m8/image/upload/v1781192856/Indiamap-DA7EbyRf_eu2u3f.jpg";

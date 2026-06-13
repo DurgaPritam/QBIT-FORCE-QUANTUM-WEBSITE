@@ -1,39 +1,21 @@
 import { useEffect, useState } from "react";
-import { siteLogoWhiteUrl } from "../content/mediaHub";
+import { loadingScreenLogoUrl } from "../content/mediaHub";
 
 type Props = {
   exiting: boolean;
-  onReady: () => void;
   onExitComplete: () => void;
 };
 
-const MIN_DISPLAY_MS = 1200;
 const FADE_OUT_MS = 900;
 
-function LoadingScreen({ exiting, onReady, onExitComplete }: Props) {
+function LoadingScreen({ exiting, onExitComplete }: Props) {
   const [logoVisible, setLogoVisible] = useState(false);
 
   useEffect(() => {
-    const start = performance.now();
+    setLogoVisible(false);
     const revealTimer = window.setTimeout(() => setLogoVisible(true), 80);
-
-    const finish = () => {
-      const elapsed = performance.now() - start;
-      const wait = Math.max(0, MIN_DISPLAY_MS - elapsed);
-      window.setTimeout(onReady, wait);
-    };
-
-    if (document.readyState === "complete") {
-      finish();
-    } else {
-      window.addEventListener("load", finish, { once: true });
-    }
-
-    return () => {
-      window.clearTimeout(revealTimer);
-      window.removeEventListener("load", finish);
-    };
-  }, [onReady]);
+    return () => window.clearTimeout(revealTimer);
+  }, []);
 
   useEffect(() => {
     if (!exiting) return;
@@ -51,6 +33,7 @@ function LoadingScreen({ exiting, onReady, onExitComplete }: Props) {
       }`}
       aria-hidden={exiting}
       aria-label="Loading Qbit Force"
+      aria-busy={!exiting}
     >
       <div
         className={`relative flex flex-col items-center transition-all duration-700 ease-out ${
@@ -62,11 +45,11 @@ function LoadingScreen({ exiting, onReady, onExitComplete }: Props) {
           <div className="absolute inset-3 animate-[splashRing_3.2s_linear_infinite_reverse] rounded-full border border-transparent border-b-blue-light/70 border-l-blue-light/30" />
           <div className="animate-[splashPulse_2s_ease-in-out_infinite]">
             <img
-              src={siteLogoWhiteUrl}
+              src={loadingScreenLogoUrl}
               alt="Qbit Force Quantum"
-              className="h-16 w-auto sm:h-24"
-              width={180}
-              height={96}
+              className="h-20 w-20 object-contain sm:h-28 sm:w-28"
+              width={112}
+              height={112}
             />
           </div>
         </div>

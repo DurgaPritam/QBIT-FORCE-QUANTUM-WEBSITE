@@ -1,16 +1,22 @@
-import PageHero from "../Components/PageHero.tsx";
+import { LegalDocument } from "../Components/LegalDocument";
+import FramerPageHero, { FramerPageShell, PageContentSection } from "../Components/FramerPageHero";
 
 function Privacy() {
   return (
-    <>
-      <PageHero
-        variant="legal"
-        badge="Legal"
+    <FramerPageShell>
+      <FramerPageHero
+        pillLabel="Legal"
         title="Privacy Policy"
         intro="How Qbit Force collects, uses, and protects your personal information."
+        chips={[
+          { label: "Read policy", href: "#privacy-content" },
+          { label: "Terms", href: "/terms" },
+          { label: "Contact", href: "/contactus" },
+        ]}
       />
-      <div className="mx-auto max-w-3xl bg-surface-warm px-5 pb-10 pt-2 text-left sm:px-8 sm:pb-12 sm:pt-4 lg:px-10 lg:pb-14">
-        <div className="mb-6 rounded-2xl border border-border bg-white p-8 text-left shadow-sm [&_h3]:font-display [&_h3]:text-navy [&_h4]:font-display [&_h4]:text-navy [&_p]:text-[1.0625rem] [&_p]:leading-[1.75] [&_p]:text-text-muted">
+
+      <PageContentSection id="privacy-content" maxWidth="max-w-3xl">
+        <LegalDocument>
           <h3>Privacy Policy</h3>
           <p>
             QbitForceQuantum Pvt. Ltd. (Hereinafter referred to as "QbitForce," "we," "us," or "our")
@@ -115,9 +121,9 @@ function Privacy() {
             Krishna, Vijayawada (Urban),<br />
             Andhra Pradesh, India<br />
           </p>
-        </div>
-      </div>
-    </>
+        </LegalDocument>
+      </PageContentSection>
+    </FramerPageShell>
   );
 }
 

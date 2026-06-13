@@ -1,6 +1,6 @@
 import { useState } from "react";
-import PageHero from "../Components/PageHero.tsx";
-import LinkedBlogCard from "../Components/LinkedBlogCard.tsx";
+import ArticleBentoGallery from "../Components/ArticleBentoGallery";
+import FramerPageHero, { FramerPageShell, PageContentSection } from "../Components/FramerPageHero";
 import { articleCategories, articles } from "../data/articlesData";
 
 function Publications() {
@@ -12,42 +12,39 @@ function Publications() {
       : articles.filter((a) => a.category === activeCategory);
 
   return (
-    <>
-      <PageHero
-        variant="publications"
-        badge="Blogs"
+    <FramerPageShell>
+      <FramerPageHero
+        pillLabel="Blogs"
         title="Qbit Force Blog"
-        intro="Insights, research updates, and stories from our quantum hardware journey in Amaravati."
-        surfaceTone="white"
+        intro="Insights, research updates, and stories from our quantum hardware journey in Amaravati — click any tile to preview, then read the full article."
+        chips={[
+          { label: "Read articles", href: "#publications" },
+          { label: "Gallery", href: "/gallery" },
+          { label: "Videos", href: "/videos" },
+        ]}
       />
 
-      <section className="bg-white pb-10 pt-2 sm:pb-12 sm:pt-4 lg:pb-14">
-        <div className="mx-auto max-w-6xl px-5 sm:px-8 lg:px-10">
-          <div className="mb-8 flex flex-wrap justify-center gap-2">
-            {articleCategories.map((cat) => (
-              <button
-                key={cat.id}
-                type="button"
-                className={
-                  activeCategory === cat.id
-                    ? "cursor-pointer rounded-full border-2 border-navy bg-navy px-5 py-2 font-display text-sm font-semibold text-white"
-                    : "cursor-pointer rounded-full border-2 border-border bg-white px-5 py-2 font-display text-sm font-semibold text-text transition-colors duration-200 hover:border-navy hover:text-navy"
-                }
-                onClick={() => setActiveCategory(cat.id)}
-              >
-                {cat.label}
-              </button>
-            ))}
-          </div>
-
-          <div className="grid gap-6 md:grid-cols-2">
-            {filtered.map((article) => (
-              <LinkedBlogCard key={article.id} article={article} />
-            ))}
-          </div>
+      <PageContentSection id="publications">
+        <div className="mb-6 flex flex-wrap justify-center gap-2 sm:mb-8">
+          {articleCategories.map((cat) => (
+            <button
+              key={cat.id}
+              type="button"
+              className={
+                activeCategory === cat.id
+                  ? "cursor-pointer rounded-full border-2 border-navy bg-navy px-4 py-2 font-display text-xs font-semibold text-white sm:px-5 sm:text-sm"
+                  : "cursor-pointer rounded-full border-2 border-border bg-white px-4 py-2 font-display text-xs font-semibold text-text transition-colors duration-200 hover:border-navy hover:text-navy sm:px-5 sm:text-sm"
+              }
+              onClick={() => setActiveCategory(cat.id)}
+            >
+              {cat.label}
+            </button>
+          ))}
         </div>
-      </section>
-    </>
+
+        <ArticleBentoGallery articles={filtered} />
+      </PageContentSection>
+    </FramerPageShell>
   );
 }
 

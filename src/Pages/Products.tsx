@@ -1,4 +1,34 @@
+import { useRef } from "react";
 import { Link } from "react-router-dom";
+import {
+  motion,
+  useScroll,
+  useSpring,
+  useTransform,
+} from "framer-motion";
+import {
+  blurUp,
+  easeOut,
+  fadeUp,
+  scaleIn,
+  slideInLeft,
+  slideInRight,
+  springSnappy,
+  springSoft,
+  stagger,
+  staggerFast,
+  viewportOnce,
+  wordReveal,
+} from "../utils/motion";
+import {
+  heroChipLinkClass,
+  heroChipsClass,
+  heroContentClass,
+  heroIntroClass,
+  heroPillClass,
+  heroSectionClass,
+  heroTitleClass,
+} from "../Components/FramerPageHero";
 
 const products = [
   {
@@ -42,72 +72,205 @@ const platformFeatures = [
   "Research & industry ready",
 ];
 
+const heroChips = [
+  { label: "Quantum Stack", href: "#stack" },
+  { label: "Platforms", href: "#platforms" },
+  { label: "Contact", href: "/contactus" },
+];
+
+function SplitHeadline({ text, className = "" }: { text: string; className?: string }) {
+  const words = text.split(" ");
+  return (
+    <motion.h1
+      className={`flex flex-wrap justify-center gap-x-[0.28em] ${className}`}
+      initial="hidden"
+      animate="visible"
+      variants={staggerFast}
+      style={{ perspective: 800 }}
+    >
+      {words.map((word, i) => (
+        <motion.span key={`${word}-${i}`} custom={i} variants={wordReveal} className="inline-block origin-bottom">
+          {word}
+        </motion.span>
+      ))}
+    </motion.h1>
+  );
+}
+
 function SectionCurve() {
   return (
-    <div
-      className="h-1 w-12 bg-gradient-to-r from-petal to-navy rounded-full"
+    <motion.div
+      initial={{ opacity: 0, scaleX: 0 }}
+      whileInView={{ opacity: 1, scaleX: 1 }}
+      viewport={viewportOnce}
+      transition={{ duration: 0.6, ease: easeOut }}
+      className="h-1 w-12 origin-left rounded-full bg-gradient-to-r from-petal to-navy"
       aria-hidden
     />
   );
 }
 
 function Products() {
+  const heroRef = useRef<HTMLElement>(null);
+
+  const { scrollYProgress: heroProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"],
+  });
+  const heroY = useTransform(heroProgress, [0, 1], [0, 120]);
+  const heroOpacity = useTransform(heroProgress, [0, 0.75], [1, 0]);
+  const heroScale = useTransform(heroProgress, [0, 1], [1, 0.94]);
+  const smoothHeroY = useSpring(heroY, { stiffness: 100, damping: 30 });
+
   return (
-    <div className="bg-white text-text-muted antialiased selection:bg-petal/10 selection:text-petal">
-      
-      {/* --- HERO ARCHITECTURE LAYER --- */}
-      <section className="relative px-5 pt-[calc(var(--nav-height)+4rem)] pb-16 sm:px-8 lg:px-10 border-b border-slate-100">
-        <div className="mx-auto max-w-7xl">
-          <div className="flex flex-col space-y-4 max-w-3xl">
-            <span className="font-display text-xs font-bold uppercase tracking-[0.3em] text-petal block">
-              SYSTEM CATALOG
-            </span>
-            <h1 className="font-display text-[clamp(2.5rem,6vw,4.5rem)] font-black leading-none tracking-tight text-navy">
-              Quantum Hardware Platforms.
-            </h1>
-            <p className="font-display text-lg text-navy/80 font-medium max-w-2xl pt-2 sm:text-xl leading-relaxed">
-              Open-access, high-fidelity modular platforms engineered to accelerate local research, foundational physics scaling, and industrial deep-tech manufacturing lines.
-            </p>
-          </div>
-        </div>
+    <div className="relative overflow-x-clip bg-[#fafbff] text-text-muted antialiased selection:bg-petal/10 selection:text-petal">
+      <div
+        className="pointer-events-none fixed inset-0 z-0 opacity-[0.35]"
+        aria-hidden
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(0,1,127,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0,1,127,0.04) 1px, transparent 1px)",
+          backgroundSize: "64px 64px",
+        }}
+      />
+
+      {/* --- HERO --- */}
+      <section ref={heroRef} className={heroSectionClass}>
+        <motion.div
+          aria-hidden
+          className="pointer-events-none absolute -left-24 top-20 h-72 w-72 rounded-full bg-blue-light/20 blur-[100px]"
+          animate={{ x: [0, 30, 0], y: [0, -20, 0] }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          aria-hidden
+          className="pointer-events-none absolute -right-20 bottom-32 h-80 w-80 rounded-full bg-petal/15 blur-[100px]"
+          animate={{ x: [0, -25, 0], y: [0, 25, 0] }}
+          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+        />
+
+        <motion.div
+          style={{ y: smoothHeroY, opacity: heroOpacity, scale: heroScale }}
+          className={heroContentClass}
+        >
+          <motion.span
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1, ...springSoft }}
+            className={heroPillClass}
+          >
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-petal" />
+            System Catalog
+          </motion.span>
+
+          <SplitHeadline text="Quantum Hardware Platforms" className={heroTitleClass} />
+
+          <motion.p
+            initial={{ opacity: 0, y: 24, filter: "blur(8px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            transition={{ delay: 0.35, duration: 0.7, ease: easeOut }}
+            className={heroIntroClass}
+          >
+            Open-access, high-fidelity modular platforms engineered to accelerate local research, foundational
+            physics scaling, and industrial deep-tech manufacturing lines.
+          </motion.p>
+
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={staggerFast}
+            className={heroChipsClass}
+          >
+            {heroChips.map((chip, i) =>
+              chip.href.startsWith("#") ? (
+                <motion.a
+                  key={chip.label}
+                  href={chip.href}
+                  variants={blurUp}
+                  custom={i}
+                  whileHover={{ scale: 1.04, y: -2 }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={springSnappy}
+                  className={heroChipLinkClass}
+                >
+                  {chip.label}
+                </motion.a>
+              ) : (
+                <motion.div key={chip.label} variants={blurUp} custom={i} whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.98 }} transition={springSnappy}>
+                  <Link to={chip.href} className={`inline-block ${heroChipLinkClass}`}>
+                    {chip.label}
+                  </Link>
+                </motion.div>
+              ),
+            )}
+          </motion.div>
+        </motion.div>
       </section>
 
       {/* --- ASYMMETRIC DUAL VIEWPORT LAYER --- */}
-      <section className="px-5 py-20 sm:px-8 lg:px-10 lg:py-28">
+      <section id="stack" className="relative z-10 scroll-mt-24 bg-white px-4 py-14 sm:px-8 sm:py-20 lg:px-10 lg:py-28">
         <div className="mx-auto max-w-7xl">
           <div className="grid gap-16 lg:grid-cols-12 lg:items-start">
             
             {/* STICKY LEFT VIEWPORT: Operational Capabilities */}
-            <div className="lg:col-span-4 lg:sticky lg:top-[calc(var(--nav-height)+3rem)]">
-              <div className="rounded-3xl bg-slate-50 border border-slate-100 p-8 sm:p-10">
+            <motion.div
+              className="lg:col-span-4 lg:sticky lg:top-[calc(var(--nav-height)+3rem)]"
+              initial="hidden"
+              whileInView="visible"
+              viewport={viewportOnce}
+              variants={slideInLeft}
+            >
+              <div className="rounded-3xl border border-slate-100 bg-slate-50 p-8 sm:p-10">
                 <SectionCurve />
-                <h2 className="font-display text-2xl font-black text-navy tracking-tight mt-6 mb-4">
+                <h2 className="mb-4 mt-6 font-display text-2xl font-black tracking-tight text-navy">
                   End-to-End Quantum Stack
                 </h2>
-                <p className="text-sm leading-relaxed text-text-muted mb-8">
+                <p className="mb-8 text-sm leading-relaxed text-text-muted">
                   From deep-cryogenic modular infrastructure assemblies to low-noise high-frequency control electronics—every single layer is exposed for direct verification, optimization, and sovereign deployment.
                 </p>
-                
+
                 {/* Structural Minimalist Checkboxes */}
-                <div className="space-y-4 border-t border-slate-200/60 pt-6">
+                <motion.div
+                  className="space-y-4 border-t border-slate-200/60 pt-6"
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={viewportOnce}
+                  variants={stagger}
+                >
                   {platformFeatures.map((item) => (
-                    <div key={item} className="flex items-center gap-3">
-                      <span className="h-2 w-2 rounded-full bg-petal shrink-0" />
+                    <motion.div key={item} variants={fadeUp} className="flex items-center gap-3">
+                      <motion.span
+                        className="h-2 w-2 shrink-0 rounded-full bg-petal"
+                        initial={{ scale: 0 }}
+                        whileInView={{ scale: 1 }}
+                        viewport={viewportOnce}
+                        transition={{ ...springSnappy, delay: 0.1 }}
+                      />
                       <span className="font-display text-xs font-bold uppercase tracking-wider text-navy">
                         {item}
                       </span>
-                    </div>
+                    </motion.div>
                   ))}
-                </div>
+                </motion.div>
               </div>
-            </div>
+            </motion.div>
 
             {/* SCROLLING RIGHT VIEWPORT: Structural Alternating Blocks */}
-            <div className="lg:col-span-8 space-y-12">
+            <motion.div
+              id="platforms"
+              className="scroll-mt-24 space-y-12 lg:col-span-8"
+              initial="hidden"
+              whileInView="visible"
+              viewport={viewportOnce}
+              variants={stagger}
+            >
               {products.map((product) => (
-                <article 
+                <motion.article
                   key={product.id}
-                  className="group relative grid gap-6 p-8 border border-slate-100 rounded-3xl transition-all duration-300 hover:border-navy/10 hover:shadow-md sm:p-12 sm:grid-cols-12"
+                  variants={slideInRight}
+                  whileHover={{ y: -4 }}
+                  transition={springSnappy}
+                  className="group relative grid gap-6 rounded-3xl border border-slate-100 p-8 transition-all duration-300 hover:border-navy/10 hover:shadow-md sm:grid-cols-12 sm:p-12"
                 >
                   {/* Metadata Row */}
                   <div className="sm:col-span-3 flex sm:flex-col justify-between border-b border-slate-100 pb-4 sm:border-b-0 sm:pb-0 sm:border-r sm:border-slate-100 sm:pr-6">
@@ -149,51 +312,72 @@ function Products() {
                       </div>
                       
                       {/* Subtle Arrow Trigger Graphic */}
-                      <span className="text-slate-300 transition-transform duration-300 group-hover:translate-x-1 group-hover:text-petal" aria-hidden>
+                      <motion.span
+                        className="text-slate-300 group-hover:text-petal"
+                        aria-hidden
+                        whileHover={{ x: 4 }}
+                        transition={springSnappy}
+                      >
                         →
-                      </span>
+                      </motion.span>
                     </div>
                   </div>
-                </article>
+                </motion.article>
               ))}
-            </div>
+            </motion.div>
 
           </div>
         </div>
       </section>
 
       {/* --- ECOSYSTEM CLOSING INTERACTIVE CALLOUT --- */}
-      <section className="bg-slate-50/50 border-t border-slate-100 py-16 sm:py-24">
-        <div className="mx-auto max-w-5xl px-5 sm:px-8 lg:px-10">
-          <div className="bg-white border border-slate-100 p-8 sm:p-14 rounded-3xl shadow-sm text-center max-w-3xl mx-auto">
-            <span className="font-display text-xs font-bold uppercase tracking-[0.25em] text-petal block mb-3">
+      <section className="relative z-10 border-t border-slate-100 bg-slate-50/50 px-4 py-12 sm:px-8 sm:py-20 lg:px-10 lg:py-24">
+        <div className="mx-auto max-w-5xl px-4 sm:px-8 lg:px-10">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={viewportOnce}
+            variants={scaleIn}
+            className="mx-auto max-w-3xl rounded-3xl border border-slate-100 bg-white p-8 text-center shadow-sm sm:p-14"
+          >
+            <span className="mb-3 block font-display text-xs font-bold uppercase tracking-[0.25em] text-petal">
               PROCUREMENT &amp; COLLABORATION
             </span>
-            <h2 className="font-display text-2xl font-black text-navy tracking-tight sm:text-4xl mb-4">
+            <h2 className="mb-4 font-display text-2xl font-black tracking-tight text-navy sm:text-4xl">
               Interested in our platforms?
             </h2>
-            <p className="text-sm leading-relaxed text-text-muted max-w-xl mx-auto mb-8">
+            <p className="mx-auto mb-8 max-w-xl text-sm leading-relaxed text-text-muted">
               Connect directly with our engineering and integration technicians in Amaravati to configure system architectures, schedule production slots, or request baseline site evaluations.
             </p>
-            
-            <div className="flex flex-wrap justify-center gap-4">
-              <Link
-                to="/contactus"
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-petal px-7 py-3.5 font-display text-xs font-bold uppercase tracking-wider text-white shadow-sm transition-all duration-200 hover:bg-navy hover:-translate-y-0.5 hover:shadow-md"
-              >
-                <span>Contact Systems Team</span>
-                <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                </svg>
-              </Link>
-              <Link
-                to="/company"
-                className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-6 py-3.5 font-display text-xs font-bold uppercase tracking-wider text-navy transition-all duration-200 hover:border-navy hover:bg-slate-50"
-              >
-                About Qbit Force
-              </Link>
-            </div>
-          </div>
+
+            <motion.div
+              className="flex flex-wrap justify-center gap-4"
+              initial="hidden"
+              whileInView="visible"
+              viewport={viewportOnce}
+              variants={staggerFast}
+            >
+              <motion.div variants={fadeUp} whileHover={{ scale: 1.03, y: -2 }} whileTap={{ scale: 0.98 }} transition={springSnappy}>
+                <Link
+                  to="/contactus"
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-petal px-7 py-3.5 font-display text-xs font-bold uppercase tracking-wider text-white shadow-sm transition-all duration-200 hover:bg-navy hover:shadow-md"
+                >
+                  <span>Contact Systems Team</span>
+                  <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                </Link>
+              </motion.div>
+              <motion.div variants={fadeUp} whileHover={{ scale: 1.03, y: -2 }} whileTap={{ scale: 0.98 }} transition={springSnappy}>
+                <Link
+                  to="/company"
+                  className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-6 py-3.5 font-display text-xs font-bold uppercase tracking-wider text-navy transition-all duration-200 hover:border-navy hover:bg-slate-50"
+                >
+                  About Qbit Force
+                </Link>
+              </motion.div>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
 
