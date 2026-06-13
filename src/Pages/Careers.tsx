@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import FramerPageHero, { FramerPageShell, PageContentSection } from "../Components/FramerPageHero";
+import LazyImage from "../Components/LazyImage";
 import { fadeUp, springSnappy, stagger, viewportTight } from "../utils/motion";
 
 const perks = [
@@ -27,6 +28,8 @@ const openRoles = [
       "Cryogenic measurement & high-frequency PCB design",
     ],
     applyEmail: "electronics@qbitforcequantum.com",
+    imageUrl:
+      "https://res.cloudinary.com/dps46p3m8/image/upload/v1781373073/1780227838904_uvzwjm.jpg",
     linkedInUrl:
       "https://www.linkedin.com/posts/qbit-force_hiring-electronicsengineer-analogelectronics-activity-7466816753734615040-sOy0",
   },
@@ -46,23 +49,29 @@ const openRoles = [
       "Superconducting qubits, cQED & cryogenic instrumentation",
     ],
     applyEmail: "scq@qbitforcequantum.com",
+    imageUrl:
+      "https://res.cloudinary.com/dps46p3m8/image/upload/v1781373074/1779640657238_prqy2l.jpg",
     linkedInUrl:
       "https://www.linkedin.com/posts/qbit-force_quantumhiring-quantumcomputing-quantumjobs-activity-7464353933864378368-epw8",
   },
 ];
 
-function JobCard({ role, index }: { role: (typeof openRoles)[number]; index: number }) {
-  return (
-    <motion.a
-      href={role.linkedInUrl}
-      target="_blank"
-      rel="noopener noreferrer"
-      variants={fadeUp}
-      whileHover={{ y: -6 }}
-      transition={springSnappy}
-      className="group flex h-full flex-col rounded-2xl border border-border bg-white p-6 text-left no-underline shadow-sm transition-shadow hover:border-petal/40 hover:shadow-lg sm:p-8"
-      aria-label={`View ${role.title} on LinkedIn`}
-    >
+function JobRow({ role, index }: { role: (typeof openRoles)[number]; index: number }) {
+  const imageOnLeft = index % 2 === 0;
+
+  const imageBlock = (
+    <div className="relative min-h-[240px] bg-[#f4f6fb] sm:min-h-[280px] lg:min-h-[360px]">
+      <LazyImage
+        src={role.imageUrl}
+        alt={`${role.title} — Qbit Force hiring poster`}
+        optimizeWidth={960}
+        className="absolute inset-0 h-full w-full object-contain object-center p-3 transition duration-500 group-hover:scale-[1.02] sm:p-4"
+      />
+    </div>
+  );
+
+  const contentBlock = (
+    <div className="flex flex-col justify-center p-6 sm:p-8 lg:p-10">
       <div className="mb-4 flex flex-wrap items-center gap-2">
         <span className="rounded-full bg-petal/10 px-2.5 py-1 font-display text-[0.6875rem] font-bold uppercase tracking-wider text-petal">
           {role.department}
@@ -77,12 +86,12 @@ function JobCard({ role, index }: { role: (typeof openRoles)[number]; index: num
         )}
       </div>
 
-      <h3 className="font-display text-xl font-bold leading-snug text-navy transition group-hover:text-petal sm:text-2xl">
+      <h3 className="font-display text-xl font-bold leading-snug text-navy transition group-hover:text-petal sm:text-2xl lg:text-[1.75rem]">
         {role.title}
       </h3>
       <p className="mt-3 text-sm leading-relaxed text-text-muted sm:text-base">{role.summary}</p>
 
-      <ul className="mt-5 flex flex-1 flex-col gap-2">
+      <ul className="mt-5 flex flex-col gap-2">
         {role.highlights.map((item) => (
           <li key={item} className="flex gap-2 text-sm text-text-muted">
             <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-petal" aria-hidden />
@@ -107,6 +116,33 @@ function JobCard({ role, index }: { role: (typeof openRoles)[number]; index: num
           <span aria-hidden>→</span>
         </span>
       </div>
+    </div>
+  );
+
+  return (
+    <motion.a
+      href={role.linkedInUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      variants={fadeUp}
+      whileHover={{ y: -4 }}
+      transition={springSnappy}
+      className={`group grid overflow-hidden rounded-2xl border border-border bg-white text-left no-underline shadow-sm transition-shadow hover:border-petal/40 hover:shadow-lg lg:items-stretch ${
+        imageOnLeft ? "lg:grid-cols-[3fr_7fr]" : "lg:grid-cols-[7fr_3fr]"
+      }`}
+      aria-label={`View ${role.title} on LinkedIn`}
+    >
+      {imageOnLeft ? (
+        <>
+          {imageBlock}
+          {contentBlock}
+        </>
+      ) : (
+        <>
+          {contentBlock}
+          {imageBlock}
+        </>
+      )}
     </motion.a>
   );
 }
@@ -166,9 +202,9 @@ function Careers() {
               </p>
             </motion.div>
 
-            <div className="grid gap-6 lg:grid-cols-2 lg:gap-8">
+            <div className="flex flex-col gap-10 lg:gap-14">
               {openRoles.map((role, index) => (
-                <JobCard key={role.id} role={role} index={index} />
+                <JobRow key={role.id} role={role} index={index} />
               ))}
             </div>
           </motion.div>
