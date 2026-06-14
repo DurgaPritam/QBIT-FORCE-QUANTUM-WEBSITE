@@ -1,10 +1,7 @@
-import { useRef, type ReactNode } from "react";
-import { motion, useScroll, useSpring, useTransform } from "framer-motion";
+import { type ReactNode } from "react";
+import { motion } from "framer-motion";
 import {
-  blurUp,
-  easeOut,
   springSnappy,
-  springSoft,
   staggerFast,
   wordReveal,
 } from "../utils/motion";
@@ -103,19 +100,8 @@ export function PageContentSection({
 }
 
 export default function FramerPageHero({ pillLabel, title, intro, chips = [] }: FramerPageHeroProps) {
-  const heroRef = useRef<HTMLElement>(null);
-
-  const { scrollYProgress: heroProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end start"],
-  });
-  const heroY = useTransform(heroProgress, [0, 1], [0, 120]);
-  const heroOpacity = useTransform(heroProgress, [0, 0.75], [1, 0]);
-  const heroScale = useTransform(heroProgress, [0, 1], [1, 0.94]);
-  const smoothHeroY = useSpring(heroY, { stiffness: 100, damping: 30 });
-
   return (
-    <section ref={heroRef} className={heroSectionClass}>
+    <section className={heroSectionClass}>
       <motion.div
         aria-hidden
         className="pointer-events-none absolute -left-24 top-20 h-72 w-72 rounded-full bg-blue-light/20 blur-[100px]"
@@ -129,44 +115,22 @@ export default function FramerPageHero({ pillLabel, title, intro, chips = [] }: 
         transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
       />
 
-      <motion.div
-        style={{ y: smoothHeroY, opacity: heroOpacity, scale: heroScale }}
-        className={heroContentClass}
-      >
-        <motion.span
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1, ...springSoft }}
-          className={heroPillClass}
-        >
+      <div className={heroContentClass}>
+        <span className={heroPillClass}>
           <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-petal" />
           {pillLabel}
-        </motion.span>
+        </span>
 
         <SplitHeadline text={title} className={heroTitleClass} />
 
-        <motion.p
-          initial={{ opacity: 0, y: 24, filter: "blur(8px)" }}
-          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-          transition={{ delay: 0.35, duration: 0.7, ease: easeOut }}
-          className={heroIntroClass}
-        >
-          {intro}
-        </motion.p>
+        <p className={heroIntroClass}>{intro}</p>
 
         {chips.length > 0 && (
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={staggerFast}
-            className={heroChipsClass}
-          >
-            {chips.map((chip, i) => (
+          <div className={heroChipsClass}>
+            {chips.map((chip) => (
               <motion.a
                 key={chip.label}
                 href={chip.href}
-                variants={blurUp}
-                custom={i}
                 whileHover={{ scale: 1.04, y: -2 }}
                 whileTap={{ scale: 0.98 }}
                 transition={springSnappy}
@@ -175,9 +139,9 @@ export default function FramerPageHero({ pillLabel, title, intro, chips = [] }: 
                 {chip.label}
               </motion.a>
             ))}
-          </motion.div>
+          </div>
         )}
-      </motion.div>
+      </div>
     </section>
   );
 }

@@ -1,21 +1,10 @@
-import { useRef } from "react";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import {
-  motion,
-  useScroll,
-  useSpring,
-  useTransform,
-} from "framer-motion";
-import {
-  blurUp,
   easeOut,
   fadeUp,
   scaleIn,
-  slideInLeft,
-  slideInRight,
   springSnappy,
-  springSoft,
-  stagger,
   staggerFast,
   viewportOnce,
   wordReveal,
@@ -97,12 +86,41 @@ function SplitHeadline({ text, className = "" }: { text: string; className?: str
   );
 }
 
+const stackViewport = { once: true, margin: "-60px" as const };
+
+const stackPanelReveal = {
+  hidden: { opacity: 0, x: -40 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.7, ease: easeOut },
+  },
+};
+
+const productCardReveal = {
+  hidden: { opacity: 0, x: 40 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.65, ease: easeOut },
+  },
+};
+
+const stackFeatureReveal = {
+  hidden: { opacity: 0, y: 16 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: easeOut },
+  },
+};
+
 function SectionCurve() {
   return (
     <motion.div
       initial={{ opacity: 0, scaleX: 0 }}
       whileInView={{ opacity: 1, scaleX: 1 }}
-      viewport={viewportOnce}
+      viewport={stackViewport}
       transition={{ duration: 0.6, ease: easeOut }}
       className="h-1 w-12 origin-left rounded-full bg-gradient-to-r from-petal to-navy"
       aria-hidden
@@ -111,17 +129,6 @@ function SectionCurve() {
 }
 
 function Products() {
-  const heroRef = useRef<HTMLElement>(null);
-
-  const { scrollYProgress: heroProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end start"],
-  });
-  const heroY = useTransform(heroProgress, [0, 1], [0, 120]);
-  const heroOpacity = useTransform(heroProgress, [0, 0.75], [1, 0]);
-  const heroScale = useTransform(heroProgress, [0, 1], [1, 0.94]);
-  const smoothHeroY = useSpring(heroY, { stiffness: 100, damping: 30 });
-
   return (
     <div className="relative overflow-x-clip bg-[#fafbff] text-text-muted antialiased selection:bg-petal/10 selection:text-petal">
       <div
@@ -135,7 +142,7 @@ function Products() {
       />
 
       {/* --- HERO --- */}
-      <section ref={heroRef} className={heroSectionClass}>
+      <section className={heroSectionClass}>
         <motion.div
           aria-hidden
           className="pointer-events-none absolute -left-24 top-20 h-72 w-72 rounded-full bg-blue-light/20 blur-[100px]"
@@ -149,45 +156,25 @@ function Products() {
           transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
         />
 
-        <motion.div
-          style={{ y: smoothHeroY, opacity: heroOpacity, scale: heroScale }}
-          className={heroContentClass}
-        >
-          <motion.span
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1, ...springSoft }}
-            className={heroPillClass}
-          >
+        <div className={heroContentClass}>
+          <span className={heroPillClass}>
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-petal" />
             System Catalog
-          </motion.span>
+          </span>
 
           <SplitHeadline text="Quantum Hardware Platforms" className={heroTitleClass} />
 
-          <motion.p
-            initial={{ opacity: 0, y: 24, filter: "blur(8px)" }}
-            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            transition={{ delay: 0.35, duration: 0.7, ease: easeOut }}
-            className={heroIntroClass}
-          >
+          <p className={heroIntroClass}>
             Open-access, high-fidelity modular platforms engineered to accelerate local research, foundational
             physics scaling, and industrial deep-tech manufacturing lines.
-          </motion.p>
+          </p>
 
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={staggerFast}
-            className={heroChipsClass}
-          >
-            {heroChips.map((chip, i) =>
+          <div className={heroChipsClass}>
+            {heroChips.map((chip) =>
               chip.href.startsWith("#") ? (
                 <motion.a
                   key={chip.label}
                   href={chip.href}
-                  variants={blurUp}
-                  custom={i}
                   whileHover={{ scale: 1.04, y: -2 }}
                   whileTap={{ scale: 0.98 }}
                   transition={springSnappy}
@@ -196,15 +183,15 @@ function Products() {
                   {chip.label}
                 </motion.a>
               ) : (
-                <motion.div key={chip.label} variants={blurUp} custom={i} whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.98 }} transition={springSnappy}>
+                <motion.div key={chip.label} whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.98 }} transition={springSnappy}>
                   <Link to={chip.href} className={`inline-block ${heroChipLinkClass}`}>
                     {chip.label}
                   </Link>
                 </motion.div>
               ),
             )}
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </section>
 
       {/* --- ASYMMETRIC DUAL VIEWPORT LAYER --- */}
@@ -214,11 +201,11 @@ function Products() {
             
             {/* STICKY LEFT VIEWPORT: Operational Capabilities */}
             <motion.div
-              className="lg:col-span-4 lg:sticky lg:top-[calc(var(--nav-height)+3rem)]"
+              className="lg:col-span-4 lg:sticky lg:top-[calc(var(--nav-height)+3rem)] lg:self-start"
               initial="hidden"
               whileInView="visible"
-              viewport={viewportOnce}
-              variants={slideInLeft}
+              viewport={stackViewport}
+              variants={stackPanelReveal}
             >
               <div className="rounded-3xl border border-slate-100 bg-slate-50 p-8 sm:p-10">
                 <SectionCurve />
@@ -234,17 +221,20 @@ function Products() {
                   className="space-y-4 border-t border-slate-200/60 pt-6"
                   initial="hidden"
                   whileInView="visible"
-                  viewport={viewportOnce}
-                  variants={stagger}
+                  viewport={stackViewport}
+                  variants={{
+                    hidden: {},
+                    visible: { transition: { staggerChildren: 0.08, delayChildren: 0.15 } },
+                  }}
                 >
                   {platformFeatures.map((item) => (
-                    <motion.div key={item} variants={fadeUp} className="flex items-center gap-3">
+                    <motion.div key={item} variants={stackFeatureReveal} className="flex items-center gap-3">
                       <motion.span
                         className="h-2 w-2 shrink-0 rounded-full bg-petal"
-                        initial={{ scale: 0 }}
-                        whileInView={{ scale: 1 }}
-                        viewport={viewportOnce}
-                        transition={{ ...springSnappy, delay: 0.1 }}
+                        variants={{
+                          hidden: { scale: 0 },
+                          visible: { scale: 1, transition: springSnappy },
+                        }}
                       />
                       <span className="font-display text-xs font-bold uppercase tracking-wider text-navy">
                         {item}
@@ -255,19 +245,15 @@ function Products() {
               </div>
             </motion.div>
 
-            {/* SCROLLING RIGHT VIEWPORT: Structural Alternating Blocks */}
-            <motion.div
-              id="platforms"
-              className="scroll-mt-24 space-y-12 lg:col-span-8"
-              initial="hidden"
-              whileInView="visible"
-              viewport={viewportOnce}
-              variants={stagger}
-            >
+            {/* SCROLLING RIGHT VIEWPORT: four platform cards scroll past sticky stack */}
+            <div id="platforms" className="scroll-mt-24 space-y-12 lg:col-span-8">
               {products.map((product) => (
                 <motion.article
                   key={product.id}
-                  variants={slideInRight}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={stackViewport}
+                  variants={productCardReveal}
                   whileHover={{ y: -4 }}
                   transition={springSnappy}
                   className="group relative grid gap-6 rounded-3xl border border-slate-100 p-8 transition-all duration-300 hover:border-navy/10 hover:shadow-md sm:grid-cols-12 sm:p-12"
@@ -324,7 +310,7 @@ function Products() {
                   </div>
                 </motion.article>
               ))}
-            </motion.div>
+            </div>
 
           </div>
         </div>

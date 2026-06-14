@@ -37,13 +37,11 @@ function VideoTile({
   onOpen,
   hoverAutoplay,
   innerRadius,
-  index,
 }: {
   video: VideoItem;
   onOpen: () => void;
   hoverAutoplay: boolean;
   innerRadius: number;
-  index: number;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canHoverPreview = hoverAutoplay && Boolean(video.src);
@@ -63,10 +61,6 @@ function VideoTile({
   return (
     <motion.button
       type="button"
-      initial={{ opacity: 0, scale: 0.96 }}
-      whileInView={{ opacity: 1, scale: 1 }}
-      viewport={{ once: true, margin: "-40px" }}
-      transition={{ duration: 0.45, delay: index * 0.05, ease: easeOut }}
       whileHover={{ scale: 1.02 }}
       onClick={onOpen}
       onMouseEnter={handleEnter}
@@ -255,7 +249,6 @@ export default function VideoBentoGallery({
               >
                 <VideoTile
                   video={video}
-                  index={index}
                   innerRadius={innerRadius}
                   hoverAutoplay={hoverAutoplay}
                   onOpen={() => openLightbox(cell.imageIndex!)}

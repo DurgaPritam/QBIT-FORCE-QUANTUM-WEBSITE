@@ -1,43 +1,24 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { useLenis } from "./SmoothScroll.tsx";
-
-function getScrollPaddingTop(): number {
-  const raw = getComputedStyle(document.documentElement).scrollPaddingTop;
-  const parsed = parseFloat(raw);
-  return Number.isFinite(parsed) ? parsed : 84;
-}
 
 export default function ScrollToTop() {
   const { pathname, hash } = useLocation();
-  const lenis = useLenis();
 
   useEffect(() => {
-    const offset = -getScrollPaddingTop();
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const behavior: ScrollBehavior = reducedMotion ? "auto" : "smooth";
 
     if (hash) {
       const id = hash.replace("#", "");
-      const target = `#${id}`;
-
-      if (lenis) {
-        lenis.scrollTo(target, { offset, force: true });
-        return;
-      }
-
       const el = document.getElementById(id);
       if (el) {
-        el.scrollIntoView({ behavior: "smooth", block: "start" });
+        el.scrollIntoView({ behavior, block: "start" });
+        return;
       }
-      return;
     }
 
-    if (lenis) {
-      lenis.scrollTo(0, { force: true });
-      return;
-    }
-
-    window.scrollTo(0, 0);
-  }, [pathname, hash, lenis]);
+    window.scrollTo({ top: 0, left: 0, behavior });
+  }, [pathname, hash]);
 
   return null;
 }

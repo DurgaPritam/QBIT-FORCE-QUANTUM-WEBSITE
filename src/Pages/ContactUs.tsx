@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import EditorialContactForm from "../Components/EditorialContactForm";
 import FramerPageHero, { FramerPageShell, PageContentSection } from "../Components/FramerPageHero";
-import { viewportTight } from "../utils/motion";
 
 function ContactUs() {
   const [submitted, setSubmitted] = useState(false);
@@ -36,12 +35,7 @@ function ContactUs() {
 
         <EditorialContactForm onSubmitted={() => setSubmitted(true)} />
 
-        <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={viewportTight}
-          className="mt-6 text-center text-sm text-text-muted sm:mt-8"
-        >
+        <p className="mt-6 text-center text-sm text-text-muted sm:mt-8">
           Prefer email?{" "}
           <a
             href="mailto:Info@qbitforcequantum.com"
@@ -53,7 +47,7 @@ function ContactUs() {
           <Link to="/press" className="font-semibold text-navy no-underline hover:text-petal">
             Media enquiries
           </Link>
-        </motion.p>
+        </p>
       </PageContentSection>
     </FramerPageShell>
   );

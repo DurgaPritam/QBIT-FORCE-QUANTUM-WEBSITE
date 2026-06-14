@@ -1,13 +1,6 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import {
-  AnimatePresence,
-  motion,
-  useScroll,
-  useSpring,
-  useTransform,
-  type MotionValue,
-} from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { indiaMapUrl, companyStoryImages } from "../content/mediaHub";
 import { coreTeamMembers, teamMembers } from "../data/teamData";
 import TiltCardGrid from "../Components/TiltCardGrid";
@@ -21,13 +14,11 @@ import {
   heroTitleClass,
 } from "../Components/FramerPageHero";
 import {
-  blurUp,
   easeOut,
   fadeUp,
   scaleIn,
   slideInLeft,
   springSnappy,
-  springSoft,
   stagger,
   staggerFast,
   viewportOnce,
@@ -135,22 +126,8 @@ function MarqueeStrip() {
   );
 }
 
-function ScrollHint(_props: { progress: MotionValue<number> }) {
-  return null;
-}
-
 function AboutUs() {
   const [activeMission, setActiveMission] = useState(0);
-  const heroRef = useRef<HTMLElement>(null);
-
-  const { scrollYProgress: heroProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end start"],
-  });
-  const heroY = useTransform(heroProgress, [0, 1], [0, 120]);
-  const heroOpacity = useTransform(heroProgress, [0, 0.75], [1, 0]);
-  const heroScale = useTransform(heroProgress, [0, 1], [1, 0.94]);
-  const smoothHeroY = useSpring(heroY, { stiffness: 100, damping: 30 });
 
   return (
     <div className="relative overflow-x-clip bg-[#fafbff] antialiased py-3">
@@ -166,7 +143,7 @@ function AboutUs() {
       />
 
       {/* ——— HERO ——— */}
-      <section ref={heroRef} className={aboutHeroSectionClass}>
+      <section className={aboutHeroSectionClass}>
         <motion.div
           aria-hidden
           className="pointer-events-none absolute -left-24 top-20 h-72 w-72 rounded-full bg-blue-light/20 blur-[100px]"
@@ -180,49 +157,29 @@ function AboutUs() {
           transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
         />
 
-        <motion.div
-          style={{ y: smoothHeroY, opacity: heroOpacity, scale: heroScale }}
-          className={heroContentClass}
-        >
-          <motion.span
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1, ...springSoft }}
-            className={heroPillClass}
-          >
+        <div className={heroContentClass}>
+          <span className={heroPillClass}>
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-petal" />
             Qbit Force Quantum
-          </motion.span>
+          </span>
 
           <SplitHeadline text="About Us" className={heroTitleClass} />
 
-          <motion.p
-            initial={{ opacity: 0, y: 24, filter: "blur(8px)" }}
-            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            transition={{ delay: 0.35, duration: 0.7, ease: easeOut }}
-            className={heroIntroClass}
-          >
+          <p className={heroIntroClass}>
             By creating a white-box quantum computer platform, we unlock transparency → understanding →
             innovation → new markets — enabling startups and manufacturers to design cryogenic wiring,
             superconducting qubits, and precision metal enclosures.
-          </motion.p>
+          </p>
 
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={staggerFast}
-            className={heroChipsClass}
-          >
+          <div className={heroChipsClass}>
             {[
               { label: "Leaders", href: "#leaders" },
               { label: "Core Team", href: "#team" },
               { label: "Mission", href: "#mission" },
-            ].map((chip, i) => (
+            ].map((chip) => (
               <motion.a
                 key={chip.label}
                 href={chip.href}
-                variants={blurUp}
-                custom={i}
                 whileHover={{ scale: 1.04, y: -2 }}
                 whileTap={{ scale: 0.98 }}
                 transition={springSnappy}
@@ -231,10 +188,8 @@ function AboutUs() {
                 {chip.label}
               </motion.a>
             ))}
-          </motion.div>
-
-          <ScrollHint progress={heroProgress} />
-        </motion.div>
+          </div>
+        </div>
       </section>
 
       <MarqueeStrip />
@@ -282,11 +237,7 @@ function AboutUs() {
                     transition={{ duration: 0.6, ease: easeOut }}
                   />
                 </div>
-                <motion.div
-                  initial={{ opacity: 0, y: 24, x: 24 }}
-                  whileInView={{ opacity: 1, y: 0, x: 0 }}
-                  viewport={viewportOnce}
-                  transition={{ ...springSoft, delay: 0.2 }}
+                <div
                   className="absolute -bottom-2 -right-4 w-[55%] overflow-hidden rounded-2xl border-4 border-white shadow-xl sm:-right-8"
                 >
                   <img
@@ -295,7 +246,7 @@ function AboutUs() {
                     className="aspect-[4/3] w-full object-cover"
                     loading="lazy"
                   />
-                </motion.div>
+                </div>
                 <div className="absolute left-5 top-5 rounded-full border border-white/30 bg-navy/90 px-4 py-2 font-display text-[0.6875rem] font-bold uppercase tracking-widest text-white backdrop-blur-sm">
                   Amaravati, AP
                 </div>

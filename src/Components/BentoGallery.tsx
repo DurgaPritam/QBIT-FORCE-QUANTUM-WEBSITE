@@ -129,10 +129,6 @@ export default function BentoGallery({
               <motion.button
                 key={`${cell.imageIndex}-${index}`}
                 type="button"
-                initial={{ opacity: 0, scale: 0.96 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true, margin: "-40px" }}
-                transition={{ duration: 0.45, delay: index * 0.05, ease: easeOut }}
                 whileHover={{ scale: 1.02 }}
                 onClick={() => openLightbox(cell.imageIndex!)}
                 className="group relative h-full w-full cursor-pointer overflow-hidden border-none bg-slate-100 p-0"

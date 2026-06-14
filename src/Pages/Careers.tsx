@@ -209,11 +209,7 @@ function Careers() {
             </div>
           </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={viewportTight}
-            transition={{ duration: 0.6 }}
+          <div
             className="mt-12 flex flex-col items-start justify-between gap-4 rounded-2xl border border-border border-l-4 border-l-petal bg-[#fafbff] p-6 sm:flex-row sm:items-center sm:p-8"
           >
             <div>
@@ -228,7 +224,7 @@ function Careers() {
             >
               General enquiry →
             </Link>
-          </motion.div>
+          </div>
       </PageContentSection>
     </FramerPageShell>
   );
