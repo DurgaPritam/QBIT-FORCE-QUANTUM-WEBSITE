@@ -3,6 +3,8 @@ import { lazy } from "react";
 import MainContent, { useRouteLoading } from "./Layout/MainContent.tsx";
 import LoadingScreen from "./Components/LoadingScreen.tsx";
 import ScrollToTop from "./Components/ScrollToTop.tsx";
+import SmoothScroll from "./Components/SmoothScroll.tsx";
+import CursorDotTrail from "./Components/CursorDotTrail.tsx";
 
 const Home = lazy(() => import("./Pages/Home.tsx"));
 const AboutUs = lazy(() => import("./Pages/AboutUs.tsx"));
@@ -52,9 +54,12 @@ function AppRoutes() {
 function App() {
   return (
     <BrowserRouter>
-      <div className="flex min-h-screen flex-col text-left">
-        <AppRoutes />
-      </div>
+      <SmoothScroll>
+        <div className="flex min-h-screen flex-col text-left">
+          <CursorDotTrail />
+          <AppRoutes />
+        </div>
+      </SmoothScroll>
     </BrowserRouter>
   );
 }

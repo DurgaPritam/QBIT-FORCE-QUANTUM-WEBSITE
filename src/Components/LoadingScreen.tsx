@@ -6,7 +6,7 @@ type Props = {
   onExitComplete: () => void;
 };
 
-const FADE_OUT_MS = 900;
+const FADE_OUT_MS = 450;
 
 function LoadingScreen({ exiting, onExitComplete }: Props) {
   const [logoVisible, setLogoVisible] = useState(false);
@@ -28,7 +28,7 @@ function LoadingScreen({ exiting, onExitComplete }: Props) {
     <div
       className={`fixed inset-0 z-[9999] flex items-center justify-center bg-gradient-to-br from-deep via-mid to-navy ease-in-out ${
         exiting
-          ? "pointer-events-none opacity-0 transition-opacity duration-[900ms]"
+          ? "pointer-events-none opacity-0 transition-opacity duration-[450ms]"
           : "opacity-100"
       }`}
       aria-hidden={exiting}
@@ -38,7 +38,7 @@ function LoadingScreen({ exiting, onExitComplete }: Props) {
       <div
         className={`relative flex flex-col items-center transition-all duration-700 ease-out ${
           logoVisible ? "scale-100 opacity-100" : "scale-90 opacity-0"
-        } ${exiting ? "scale-105 opacity-0 transition-all duration-[900ms]" : ""}`}
+        } ${exiting ? "scale-105 opacity-0 transition-all duration-[450ms]" : ""}`}
       >
         <div className="relative flex h-36 w-36 items-center justify-center sm:h-44 sm:w-44">
           <div className="absolute inset-0 animate-[splashRing_2.4s_linear_infinite] rounded-full border-2 border-transparent border-t-petal border-r-petal/40" />
