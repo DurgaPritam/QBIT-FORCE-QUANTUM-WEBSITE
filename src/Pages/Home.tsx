@@ -2,7 +2,7 @@ import Hero from "../Components/Hero.tsx";
 import CompanyStory from "../Components/CompanyStory.tsx";
 import PeoplePrinciplesSection from "../Components/PeoplePrinciplesSection.tsx";
 import LinkedBlogsSection from "../Components/LinkedBlogsSection.tsx";
-import PressMediaHomeSection from "../Components/PressMediaHomeSection.tsx";
+
 import GalleryHomeSection from "../Components/GalleryHomeSection.tsx";
 import VideosHomeSection from "../Components/VideosHomeSection.tsx";
 import { Link } from "react-router-dom";
@@ -28,7 +28,7 @@ function Home() {
 
       <LinkedBlogsSection />
 
-      <PressMediaHomeSection />
+     
 
       <GalleryHomeSection />
 
