@@ -1,12 +1,11 @@
-import { useCallback, useEffect, useRef, useState, type MouseEvent } from "react";
+import { useCallback, useRef, type MouseEvent } from "react";
 import LazyImage from "./LazyImage";
-import { motion } from "framer-motion";
-import { scaleIn, stagger, viewportOnce } from "../utils/motion";
 
 /** Port of Framer Marketplace "Tilt Card Grid" — 3D tilt with inertia hover */
 const MAX_TILT_X = 14;
 const MAX_TILT_Y = 18;
 const LERP_FACTOR = 0.18;
+const SETTLE_EPSILON = 0.05;
 
 function lerp(a: number, b: number, t: number) {
   return a + (b - a) * t;
@@ -39,40 +38,66 @@ function TiltCard3D({
   descriptionLines,
 }: TiltCard3DProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const [tilt, setTilt] = useState({ x: 0, y: 0 });
-  const [target, setTarget] = useState({ x: 0, y: 0 });
-  const animationRef = useRef<number | null>(null);
+  const tiltRef = useRef({ x: 0, y: 0 });
+  const targetRef = useRef({ x: 0, y: 0 });
+  const hoveringRef = useRef(false);
+  const rafRef = useRef<number | null>(null);
 
-  useEffect(() => {
-    let running = true;
+  const applyTransform = useCallback(() => {
+    const el = ref.current;
+    if (!el) return;
+    const { x, y } = tiltRef.current;
+    el.style.transform = `perspective(800px) rotateX(${x}deg) rotateY(${y}deg)`;
+  }, []);
 
-    function animate() {
-      setTilt((prev) => ({
-        x: lerp(prev.x, target.x, LERP_FACTOR),
-        y: lerp(prev.y, target.y, LERP_FACTOR),
-      }));
-      if (running) animationRef.current = requestAnimationFrame(animate);
-    }
+  const startLoop = useCallback(() => {
+    if (rafRef.current !== null) return;
 
-    animationRef.current = requestAnimationFrame(animate);
+    const tick = () => {
+      const tx = targetRef.current.x;
+      const ty = targetRef.current.y;
 
-    return () => {
-      running = false;
-      if (animationRef.current) cancelAnimationFrame(animationRef.current);
+      tiltRef.current = {
+        x: lerp(tiltRef.current.x, tx, LERP_FACTOR),
+        y: lerp(tiltRef.current.y, ty, LERP_FACTOR),
+      };
+      applyTransform();
+
+      const settled =
+        Math.abs(tiltRef.current.x - tx) < SETTLE_EPSILON &&
+        Math.abs(tiltRef.current.y - ty) < SETTLE_EPSILON;
+
+      if (!settled || hoveringRef.current) {
+        rafRef.current = requestAnimationFrame(tick);
+      } else {
+        rafRef.current = null;
+      }
     };
-  }, [target.x, target.y]);
 
-  const handleMouseMove = useCallback((e: MouseEvent<HTMLDivElement>) => {
-    if (!ref.current) return;
-    const rect = ref.current.getBoundingClientRect();
-    const px = clamp(((e.clientX - rect.left) / rect.width) * 2 - 1, -1, 1);
-    const py = clamp(((e.clientY - rect.top) / rect.height) * 2 - 1, -1, 1);
-    setTarget({ x: py * MAX_TILT_X, y: px * MAX_TILT_Y });
+    rafRef.current = requestAnimationFrame(tick);
+  }, [applyTransform]);
+
+  const handleMouseMove = useCallback(
+    (e: MouseEvent<HTMLDivElement>) => {
+      if (!ref.current) return;
+      const rect = ref.current.getBoundingClientRect();
+      const px = clamp(((e.clientX - rect.left) / rect.width) * 2 - 1, -1, 1);
+      const py = clamp(((e.clientY - rect.top) / rect.height) * 2 - 1, -1, 1);
+      targetRef.current = { x: py * MAX_TILT_X, y: px * MAX_TILT_Y };
+      startLoop();
+    },
+    [startLoop],
+  );
+
+  const handleMouseEnter = useCallback(() => {
+    hoveringRef.current = true;
   }, []);
 
   const handleMouseLeave = useCallback(() => {
-    setTarget({ x: 0, y: 0 });
-  }, []);
+    hoveringRef.current = false;
+    targetRef.current = { x: 0, y: 0 };
+    startLoop();
+  }, [startLoop]);
 
   return (
     <div
@@ -80,12 +105,10 @@ function TiltCard3D({
       role="article"
       aria-label={title}
       tabIndex={0}
+      onMouseEnter={handleMouseEnter}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="flex h-full w-full min-w-0 cursor-pointer flex-col overflow-hidden rounded-2xl bg-white shadow-[0_8px_32px_rgba(0,1,127,0.1)] transition-shadow duration-200 will-change-transform hover:shadow-[0_16px_48px_rgba(0,1,127,0.16)]"
-      style={{
-        transform: `perspective(800px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
-      }}
+      className="flex h-full w-full min-w-0 cursor-pointer flex-col overflow-hidden rounded-2xl bg-white shadow-[0_8px_32px_rgba(0,1,127,0.1)] transition-shadow duration-200 hover:shadow-[0_16px_48px_rgba(0,1,127,0.16)]"
     >
       <div className={`relative w-full shrink-0 overflow-hidden bg-slate-100 ${imageAspect}`}>
         <LazyImage
@@ -131,16 +154,14 @@ type TiltCardGridProps = {
   items: TiltCardItem[];
   className?: string;
   gap?: number;
-  animate?: boolean;
 };
 
 export default function TiltCardGrid({
   items,
   className = "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3",
   gap = 24,
-  animate = true,
 }: TiltCardGridProps) {
-  const grid = (
+  return (
     <div className={`grid w-full items-stretch ${className}`} style={{ gap }}>
       {items.map((item, index) => (
         <div key={`${item.title}-${index}`} className="min-w-0">
@@ -148,19 +169,5 @@ export default function TiltCardGrid({
         </div>
       ))}
     </div>
-  );
-
-  if (!animate) return grid;
-
-  return (
-    <motion.div initial="hidden" whileInView="visible" viewport={viewportOnce} variants={stagger}>
-      <div className={`grid w-full items-stretch ${className}`} style={{ gap }}>
-        {items.map((item, index) => (
-          <motion.div key={`${item.title}-${index}`} variants={scaleIn} className="min-h-0 min-w-0">
-            <TiltCard3D {...item} />
-          </motion.div>
-        ))}
-      </div>
-    </motion.div>
   );
 }

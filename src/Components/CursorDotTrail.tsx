@@ -82,6 +82,9 @@ export default function CursorDotTrail({
   const lineWidthRef = useRef(0);
   const lineTargetWidthRef = useRef(0);
   const lineProgressRef = useRef(0);
+  const hitTargetRef = useRef<Element | null>(null);
+  const scrollingRef = useRef(false);
+  const scrollEndTimerRef = useRef(0);
 
   useEffect(() => {
     const isBrowser = typeof window !== "undefined" && typeof document !== "undefined";
@@ -127,14 +130,47 @@ export default function CursorDotTrail({
 
     resize();
 
-    const onMouseMove = (e: MouseEvent) => {
-      targetRef.current = { x: e.clientX, y: e.clientY };
+    const markScrolling = () => {
+      scrollingRef.current = true;
+      window.clearTimeout(scrollEndTimerRef.current);
+      if (animRef.current !== undefined) {
+        cancelAnimationFrame(animRef.current);
+        animRef.current = undefined;
+      }
+      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+      pointsRef.current = [];
+      scrollEndTimerRef.current = window.setTimeout(() => {
+        scrollingRef.current = false;
+      }, 120);
     };
 
-    window.addEventListener("mousemove", onMouseMove);
+    const onMouseMove = (e: MouseEvent) => {
+      targetRef.current = { x: e.clientX, y: e.clientY };
+      hitTargetRef.current = document.elementFromPoint(e.clientX, e.clientY);
+      if (animRef.current === undefined) {
+        animRef.current = requestAnimationFrame(animate);
+      }
+    };
+
+    const scheduleFrame = () => {
+      if (animRef.current === undefined) {
+        animRef.current = requestAnimationFrame(animate);
+      }
+    };
+
+    window.addEventListener("mousemove", onMouseMove, { passive: true });
     window.addEventListener("resize", resize);
+    window.addEventListener("wheel", markScrolling, { passive: true });
+    window.addEventListener("touchmove", markScrolling, { passive: true });
+    window.addEventListener("scroll", markScrolling, { passive: true });
 
     const animate = () => {
+      animRef.current = undefined;
+
+      if (scrollingRef.current) {
+        return;
+      }
+
       const now = performance.now();
       const dt = Math.min(now - lastTimeRef.current, 33);
       lastTimeRef.current = now;
@@ -156,13 +192,13 @@ export default function CursorDotTrail({
       }
       pointsRef.current = pointsRef.current.filter((p) => p.age < trailDuration);
 
-      const el = document.elementFromPoint(targetRef.current.x, targetRef.current.y);
+      const el = hitTargetRef.current;
 
       const isHideTrail = !!el?.closest(
         '[aria-label~="trail{hide}"],[data-framer-name~="trail{hide}"],[data-trail-hide]',
       );
       if (isHideTrail) {
-        animRef.current = requestAnimationFrame(animate);
+        scheduleFrame();
         return;
       }
 
@@ -267,16 +303,24 @@ export default function CursorDotTrail({
         }
       }
 
-      animRef.current = requestAnimationFrame(animate);
-    };
+      const moving =
+        Math.hypot(velocityRef.current.x, velocityRef.current.y) > 0.08 ||
+        Math.hypot(dx, dy) > 0.5 ||
+        pointsRef.current.length > 0;
 
-    lastTimeRef.current = performance.now();
-    animRef.current = requestAnimationFrame(animate);
+      if (moving) {
+        scheduleFrame();
+      }
+    };
 
     return () => {
       window.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("resize", resize);
-      if (animRef.current) cancelAnimationFrame(animRef.current);
+      window.removeEventListener("wheel", markScrolling);
+      window.removeEventListener("touchmove", markScrolling);
+      window.removeEventListener("scroll", markScrolling);
+      window.clearTimeout(scrollEndTimerRef.current);
+      if (animRef.current !== undefined) cancelAnimationFrame(animRef.current);
     };
   }, [
     borderWidth,

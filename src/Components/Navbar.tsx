@@ -313,8 +313,17 @@ function Navbar() {
   }, [expanded]);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 12);
-    onScroll();
+    let scrolled = window.scrollY > 12;
+    setScrolled(scrolled);
+
+    const onScroll = () => {
+      const next = window.scrollY > 12;
+      if (next !== scrolled) {
+        scrolled = next;
+        setScrolled(next);
+      }
+    };
+
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);

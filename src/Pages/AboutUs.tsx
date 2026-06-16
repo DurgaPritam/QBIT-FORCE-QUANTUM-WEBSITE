@@ -133,7 +133,7 @@ function AboutUs() {
     <div className="relative overflow-x-clip bg-[#fafbff] antialiased py-3">
       {/* subtle grid — Framer marketplace aesthetic */}
       <div
-        className="pointer-events-none fixed inset-0 z-0 opacity-[0.35]"
+        className="pointer-events-none absolute inset-0 z-0 opacity-[0.35]"
         aria-hidden
         style={{
           backgroundImage:

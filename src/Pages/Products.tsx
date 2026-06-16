@@ -97,15 +97,6 @@ const stackPanelReveal = {
   },
 };
 
-const productCardReveal = {
-  hidden: { opacity: 0, x: 40 },
-  visible: {
-    opacity: 1,
-    x: 0,
-    transition: { duration: 0.65, ease: easeOut },
-  },
-};
-
 const stackFeatureReveal = {
   hidden: { opacity: 0, y: 16 },
   visible: {
@@ -132,7 +123,7 @@ function Products() {
   return (
     <div className="relative overflow-x-clip bg-[#fafbff] text-text-muted antialiased selection:bg-petal/10 selection:text-petal">
       <div
-        className="pointer-events-none fixed inset-0 z-0 opacity-[0.35]"
+        className="pointer-events-none absolute inset-0 z-0 opacity-[0.35]"
         aria-hidden
         style={{
           backgroundImage:
@@ -248,15 +239,9 @@ function Products() {
             {/* SCROLLING RIGHT VIEWPORT: four platform cards scroll past sticky stack */}
             <div id="platforms" className="scroll-mt-24 space-y-12 lg:col-span-8">
               {products.map((product) => (
-                <motion.article
+                <article
                   key={product.id}
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={stackViewport}
-                  variants={productCardReveal}
-                  whileHover={{ y: -4 }}
-                  transition={springSnappy}
-                  className="group relative grid gap-6 rounded-3xl border border-slate-100 p-8 transition-all duration-300 hover:border-navy/10 hover:shadow-md sm:grid-cols-12 sm:p-12"
+                  className="group relative grid gap-6 rounded-3xl border border-slate-100 p-8 transition-all duration-300 hover:-translate-y-1 hover:border-navy/10 hover:shadow-md sm:grid-cols-12 sm:p-12"
                 >
                   {/* Metadata Row */}
                   <div className="sm:col-span-3 flex sm:flex-col justify-between border-b border-slate-100 pb-4 sm:border-b-0 sm:pb-0 sm:border-r sm:border-slate-100 sm:pr-6">
@@ -308,7 +293,7 @@ function Products() {
                       </motion.span>
                     </div>
                   </div>
-                </motion.article>
+                </article>
               ))}
             </div>
 

@@ -28,7 +28,7 @@ function Home() {
 
       <LinkedBlogsSection />
 
-      <PressMediaHomeSection />
+    
 
       <GalleryHomeSection />
 
