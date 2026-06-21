@@ -86,12 +86,7 @@ export const heroSlides: HeroSlide[] = [
       "https://res.cloudinary.com/dps46p3m8/image/upload/v1780935950/Copy_of_IMG_20260414_161438_zed6bs.jpg",
     alt: "Qbit Force facility walkthrough",
   },
-  {
-    id: "hero-3",
-    type: "image",
-    src: "https://res.cloudinary.com/dps46p3m8/image/upload/v1780935962/Copy_of_IMG_20260415_121621_kykc6t.jpg",
-    alt: "Quantum systems development at Qbit Force",
-  },
+  
   {
     id: "hero-1",
     type: "image",

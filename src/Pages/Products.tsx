@@ -24,7 +24,7 @@ const products = [
     id: "01",
     title: "Dilution Refrigerators",
     description:
-      "Manufactured at scale for Amaravati Quantum Valley — cryogenic platforms enabling superconducting qubit operations at millikelvin temperatures.",
+      "Manufactured at scale for Amaravati Quantum Valley - cryogenic platforms enabling superconducting qubit operations at millikelvin temperatures.",
     tag: "Cryogenics",
     spec: "< 10 mK Base Temp",
   },

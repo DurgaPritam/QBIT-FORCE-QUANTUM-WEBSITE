@@ -68,7 +68,7 @@ const whoWeAreParagraphs = [
 ];
 
 const impactStats = [
-  { value: "2", label: "Quantum computers", sub: "Planned in Amaravati" },
+  { value: "2", label: "Quantum computers", sub: "Successfully setup.." },
   { value: "Feb 2026", label: "Foundation stone", sub: "Official ceremony" },
   { value: "AQV", label: "Quantum Valley", sub: "Amaravati hub" },
   { value: "White-Box", label: "Platform model", sub: "Open & transparent" },
