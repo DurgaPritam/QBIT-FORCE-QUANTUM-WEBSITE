@@ -3,6 +3,8 @@ import { companyStoryImages } from "../content/mediaHub";
 import LazyImage from "./LazyImage";
 
 function CompanyStory() {
+  const storyImage = companyStoryImages[0];
+
   return (
     <section className="bg-white py-16 sm:py-20 lg:py-24">
       <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
@@ -34,30 +36,23 @@ function CompanyStory() {
             </Link>
           </div>
 
-          <div className="flex flex-col gap-3 sm:gap-4">
-            {companyStoryImages.map((item) => (
-              <figure
-                key={item.id}
-                className="group overflow-hidden rounded-xl border border-border shadow-sm"
-              >
-                <div className="aspect-[4/3] overflow-hidden sm:aspect-[16/10]">
-                  <LazyImage
-                    src={item.imageUrl}
-                    alt={item.title}
-                    optimizeWidth={900}
-                    className="h-full w-full object-cover object-center transition duration-500 group-hover:scale-[1.02]"
-                    loading="lazy"
-                  />
-                </div>
-                <figcaption className="border-t border-border bg-white p-3 sm:p-4">
-                  <p className="font-display text-xs font-semibold text-navy sm:text-sm">{item.title}</p>
-                  <p className="mt-0.5 text-[0.6875rem] leading-snug text-text-muted sm:text-xs">
-                    {item.caption}
-                  </p>
-                </figcaption>
-              </figure>
-            ))}
-          </div>
+          <figure className="group overflow-hidden rounded-xl border border-border shadow-sm">
+            <div className="aspect-[4/3] overflow-hidden sm:aspect-[16/10]">
+              <LazyImage
+                src={storyImage.imageUrl}
+                alt={storyImage.title}
+                optimizeWidth={900}
+                className="h-full w-full object-cover object-center transition duration-500 group-hover:scale-[1.02]"
+                loading="lazy"
+              />
+            </div>
+            <figcaption className="border-t border-border bg-white p-3 sm:p-4">
+              <p className="font-display text-xs font-semibold text-navy sm:text-sm">{storyImage.title}</p>
+              <p className="mt-0.5 text-[0.6875rem] leading-snug text-text-muted sm:text-xs">
+                {storyImage.caption}
+              </p>
+            </figcaption>
+          </figure>
         </div>
       </div>
     </section>
