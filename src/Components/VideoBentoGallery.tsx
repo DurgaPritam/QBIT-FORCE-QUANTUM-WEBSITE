@@ -331,6 +331,11 @@ export default function VideoBentoGallery({
                 <p className="pointer-events-none max-w-lg text-center font-display text-sm font-semibold text-white/90">
                   {activeVideo.title}
                 </p>
+                {activeVideo.description && (
+                  <p className="pointer-events-none max-w-lg px-4 text-center text-xs leading-relaxed text-white/75 sm:text-sm">
+                    {activeVideo.description}
+                  </p>
+                )}
               </div>
             </motion.div>
           </AnimatePresence>,

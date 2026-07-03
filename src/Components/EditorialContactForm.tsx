@@ -1,5 +1,6 @@
 import { useState, type ChangeEvent, type FormEvent, type ReactNode } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { apiRequest } from "../api/client";
 import { easeOut, springSnappy } from "../utils/motion";
 
 type ContactFormData = {
@@ -9,6 +10,13 @@ type ContactFormData = {
   company: string;
   inquiryType: string;
   message: string;
+  partnershipType: string;
+  productInterest: string;
+  roleInterest: string;
+  linkedIn: string;
+  mediaOutlet: string;
+  deadline: string;
+  storyTopic: string;
 };
 
 const initialForm: ContactFormData = {
@@ -18,6 +26,13 @@ const initialForm: ContactFormData = {
   company: "",
   inquiryType: "general",
   message: "",
+  partnershipType: "",
+  productInterest: "",
+  roleInterest: "",
+  linkedIn: "",
+  mediaOutlet: "",
+  deadline: "",
+  storyTopic: "",
 };
 
 const inquiryOptions = [
@@ -26,16 +41,161 @@ const inquiryOptions = [
   { value: "products", label: "Products", description: "Hardware & platforms" },
   { value: "careers", label: "Careers", description: "Join our team" },
   { value: "media", label: "Media & Press", description: "Press & coverage" },
-];
+] as const;
+
+type InquiryValue = (typeof inquiryOptions)[number]["value"];
+
+type FieldConfig = {
+  id: keyof ContactFormData;
+  label: string;
+  type?: "text" | "email" | "tel" | "url" | "date" | "select";
+  placeholder?: string;
+  required?: boolean;
+  options?: { value: string; label: string }[];
+  fullWidth?: boolean;
+};
+
+const detailsFieldsByType: Record<InquiryValue, FieldConfig[]> = {
+  general: [
+    { id: "name", label: "Full Name", required: true, placeholder: "Your full name" },
+    { id: "email", label: "Email", type: "email", required: true, placeholder: "you@company.com" },
+    { id: "phone", label: "Phone", type: "tel", placeholder: "+91 XXXXX XXXXX" },
+    { id: "company", label: "Company", placeholder: "Organization (optional)" },
+  ],
+  partnership: [
+    { id: "name", label: "Full Name", required: true, placeholder: "Your full name" },
+    { id: "email", label: "Work Email", type: "email", required: true, placeholder: "you@organization.com" },
+    { id: "phone", label: "Phone", type: "tel", required: true, placeholder: "+91 XXXXX XXXXX" },
+    { id: "company", label: "Organization", required: true, placeholder: "Company or institution name" },
+    {
+      id: "partnershipType",
+      label: "Partnership Type",
+      type: "select",
+      required: true,
+      options: [
+        { value: "", label: "Select partnership type" },
+        { value: "research", label: "Research collaboration" },
+        { value: "industry", label: "Industry partnership" },
+        { value: "government", label: "Government / public sector" },
+        { value: "academic", label: "Academic institution" },
+      ],
+    },
+  ],
+  products: [
+    { id: "name", label: "Full Name", required: true, placeholder: "Your full name" },
+    { id: "email", label: "Work Email", type: "email", required: true, placeholder: "you@company.com" },
+    { id: "phone", label: "Phone", type: "tel", required: true, placeholder: "+91 XXXXX XXXXX" },
+    { id: "company", label: "Company", required: true, placeholder: "Your organization" },
+    {
+      id: "productInterest",
+      label: "Product of Interest",
+      type: "select",
+      required: true,
+      options: [
+        { value: "", label: "Select a product area" },
+        { value: "qpu", label: "Quantum processing units (QPU)" },
+        { value: "cryogenic", label: "Cryogenic systems" },
+        { value: "control", label: "Control & measurement" },
+        { value: "platform", label: "Full-stack platform" },
+        { value: "other", label: "Other / not sure yet" },
+      ],
+    },
+  ],
+  careers: [
+    { id: "name", label: "Full Name", required: true, placeholder: "Your full name" },
+    { id: "email", label: "Email", type: "email", required: true, placeholder: "you@email.com" },
+    { id: "phone", label: "Phone", type: "tel", required: true, placeholder: "+91 XXXXX XXXXX" },
+    { id: "roleInterest", label: "Role of Interest", required: true, placeholder: "e.g. Quantum Software Engineer" },
+    { id: "linkedIn", label: "LinkedIn / Portfolio", type: "url", placeholder: "https://linkedin.com/in/...", fullWidth: true },
+  ],
+  media: [
+    { id: "name", label: "Full Name", required: true, placeholder: "Your full name" },
+    { id: "email", label: "Email", type: "email", required: true, placeholder: "you@media.com" },
+    { id: "phone", label: "Phone", type: "tel", required: true, placeholder: "+91 XXXXX XXXXX" },
+    { id: "mediaOutlet", label: "Media Outlet / Publication", required: true, placeholder: "Publication or organization name" },
+    { id: "storyTopic", label: "Story Topic", required: true, placeholder: "What would you like to cover?", fullWidth: true },
+    { id: "deadline", label: "Deadline (optional)", type: "date", fullWidth: true },
+  ],
+};
+
+const messageConfigByType: Record<
+  InquiryValue,
+  { title: string; subtitle: string; label: string; placeholder: string }
+> = {
+  general: {
+    title: "Your question",
+    subtitle: "Tell us what you'd like to know about Qbit Force.",
+    label: "Message",
+    placeholder: "How can we help you?",
+  },
+  partnership: {
+    title: "Partnership proposal",
+    subtitle: "Describe your collaboration goals and how AQV and Qbit Force can work together.",
+    label: "Partnership details",
+    placeholder: "Share your partnership idea, timeline, and expected outcomes...",
+  },
+  products: {
+    title: "Product enquiry",
+    subtitle: "Tell us about your use case, requirements, and timeline.",
+    label: "Requirements",
+    placeholder: "Describe your quantum hardware needs, deployment scale, and questions...",
+  },
+  careers: {
+    title: "Application message",
+    subtitle: "Share a brief cover note — experience, motivation, and availability.",
+    label: "Cover message",
+    placeholder: "Why Qbit Force? Highlight relevant experience and when you can start...",
+  },
+  media: {
+    title: "Press enquiry",
+    subtitle: "Include interview requests, fact-checking needs, or assets required.",
+    label: "Enquiry details",
+    placeholder: "Interview requests, quotes needed, embargo details, or other press requirements...",
+  },
+};
+
+function buildSubmissionMessage(form: ContactFormData): string {
+  const lines: string[] = [];
+
+  if (form.inquiryType === "partnership" && form.partnershipType) {
+    lines.push(`Partnership type: ${labelForOption(form.partnershipType, detailsFieldsByType.partnership.find((f) => f.id === "partnershipType")?.options)}`);
+  }
+  if (form.inquiryType === "products" && form.productInterest) {
+    lines.push(`Product interest: ${labelForOption(form.productInterest, detailsFieldsByType.products.find((f) => f.id === "productInterest")?.options)}`);
+  }
+  if (form.inquiryType === "careers") {
+    if (form.roleInterest) lines.push(`Role of interest: ${form.roleInterest}`);
+    if (form.linkedIn.trim()) lines.push(`LinkedIn / portfolio: ${form.linkedIn.trim()}`);
+  }
+  if (form.inquiryType === "media") {
+    if (form.mediaOutlet) lines.push(`Media outlet: ${form.mediaOutlet}`);
+    if (form.storyTopic) lines.push(`Story topic: ${form.storyTopic}`);
+    if (form.deadline) lines.push(`Deadline: ${form.deadline}`);
+  }
+
+  if (lines.length > 0) lines.push("");
+  lines.push(form.message.trim());
+  return lines.join("\n");
+}
+
+function labelForOption(value: string, options?: { value: string; label: string }[]) {
+  return options?.find((o) => o.value === value)?.label ?? value;
+}
+
+function validateDetailsStep(form: ContactFormData): boolean {
+  const fields = detailsFieldsByType[form.inquiryType as InquiryValue] ?? detailsFieldsByType.general;
+  return fields.every((field) => {
+    if (!field.required) return true;
+    const value = String(form[field.id] ?? "").trim();
+    return value.length > 0;
+  });
+}
 
 const stepLabels = ["Topic", "Details", "Message"];
 const TOTAL_STEPS = stepLabels.length;
 
 const MAP_EMBED_URL =
   "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d992.5497754437642!2d80.59733120961054!3d16.529997136368806!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a35ef0074d65639%3A0x543b2e46f32aedf1!2sSubbarayudu%20street%20Bhavanipuram!5e1!3m2!1sen!2sde!4v1776761636438!5m2!1sen!2sde";
-
-const FORM_SUBMIT_EMAIL = "Rupa@qbitforcequantum.com";
-const FORM_SUBMIT_URL = `https://formsubmit.co/ajax/${encodeURIComponent(FORM_SUBMIT_EMAIL)}`;
 
 const contactInfo = [
   {
@@ -173,13 +333,19 @@ export default function EditorialContactForm({ onSubmitted }: Props) {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
   const setInquiryType = (value: string) => {
-    setForm((prev) => ({ ...prev, inquiryType: value }));
+    setForm((prev) => ({
+      ...initialForm,
+      inquiryType: value,
+      name: prev.name,
+      email: prev.email,
+      phone: prev.phone,
+    }));
   };
 
   const goNext = () => {
@@ -199,29 +365,27 @@ export default function EditorialContactForm({ onSubmitted }: Props) {
     const inquiryLabel =
       inquiryOptions.find((o) => o.value === form.inquiryType)?.label ?? form.inquiryType;
 
-    const payload = new FormData();
-    payload.append("name", form.name.trim());
-    payload.append("email", form.email.trim());
-    payload.append("phone", form.phone.trim());
-    payload.append("company", form.company.trim() || "N/A");
-    payload.append("inquiryType", inquiryLabel);
-    payload.append("message", form.message.trim());
-    payload.append("_subject", `Contact Enquiry — ${inquiryLabel}`);
-    payload.append("_template", "table");
-    payload.append("_captcha", "false");
-
     setSubmitting(true);
 
     try {
-      const response = await fetch(FORM_SUBMIT_URL, {
-        method: "POST",
-        body: payload,
-        headers: { Accept: "application/json" },
-      });
+      const companyValue =
+        form.inquiryType === "media"
+          ? form.mediaOutlet.trim()
+          : form.inquiryType === "careers"
+            ? form.roleInterest.trim()
+            : form.company.trim();
 
-      if (!response.ok) {
-        throw new Error("Submission failed");
-      }
+      await apiRequest<{ message: string }>("/public/contact", {
+        method: "POST",
+        body: {
+          name: form.name.trim(),
+          email: form.email.trim(),
+          phone: form.phone.trim(),
+          company: companyValue || "N/A",
+          inquiryType: inquiryLabel,
+          message: buildSubmissionMessage(form),
+        },
+      });
 
       setForm(initialForm);
       setStep(0);
@@ -236,9 +400,12 @@ export default function EditorialContactForm({ onSubmitted }: Props) {
   };
 
   const canProceedStep0 = Boolean(form.inquiryType);
-  const canProceedStep1 =
-    form.name.trim().length > 0 && form.email.trim().length > 0 && form.phone.trim().length > 0;
+  const canProceedStep1 = validateDetailsStep(form);
   const canSubmit = form.message.trim().length > 0;
+
+  const activeType = (form.inquiryType as InquiryValue) || "general";
+  const detailFields = detailsFieldsByType[activeType];
+  const messageConfig = messageConfigByType[activeType];
 
   const formVariants = {
     enter: (dir: number) => ({ opacity: 0, x: dir > 0 ? 40 : -40 }),
@@ -253,12 +420,7 @@ export default function EditorialContactForm({ onSubmitted }: Props) {
       <div className="flex flex-col px-4 py-6 sm:px-10 sm:py-10 lg:px-12 lg:py-12">
         <ProgressBar step={step} total={TOTAL_STEPS} />
 
-        <form
-          className="flex flex-1 flex-col"
-          action={`https://formsubmit.co/${encodeURIComponent(FORM_SUBMIT_EMAIL)}`}
-          method="POST"
-          onSubmit={handleSubmit}
-        >
+        <form className="flex flex-1 flex-col" onSubmit={handleSubmit}>
           <input
             type="hidden"
             name="inquiryType"
@@ -317,7 +479,7 @@ export default function EditorialContactForm({ onSubmitted }: Props) {
 
               {step === 1 && (
                 <motion.div
-                  key="step-1"
+                  key={`step-1-${activeType}`}
                   custom={direction}
                   variants={formVariants}
                   initial="enter"
@@ -328,67 +490,53 @@ export default function EditorialContactForm({ onSubmitted }: Props) {
                 >
                   <div>
                     <h2 className="font-display text-xl font-bold text-navy sm:text-2xl">Your details</h2>
-                    <p className="mt-2 text-sm text-text-muted">Fields marked * are required.</p>
+                    <p className="mt-2 text-sm text-text-muted">
+                      {inquiryOptions.find((o) => o.value === activeType)?.description} — fields marked * are required.
+                    </p>
                   </div>
                   <div className="grid gap-5 sm:grid-cols-2">
-                    <div>
-                      <FieldLabel htmlFor="name">Full Name *</FieldLabel>
-                      <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        value={form.name}
-                        onChange={handleChange}
-                        placeholder="Your full name"
-                        required
-                        className={inputClass}
-                      />
-                    </div>
-                    <div>
-                      <FieldLabel htmlFor="email">Email *</FieldLabel>
-                      <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value={form.email}
-                        onChange={handleChange}
-                        placeholder="you@company.com"
-                        required
-                        className={inputClass}
-                      />
-                    </div>
-                    <div>
-                      <FieldLabel htmlFor="phone">Phone *</FieldLabel>
-                      <input
-                        type="tel"
-                        id="phone"
-                        name="phone"
-                        value={form.phone}
-                        onChange={handleChange}
-                        placeholder="+91 XXXXX XXXXX"
-                        required
-                        className={inputClass}
-                      />
-                    </div>
-                    <div>
-                      <FieldLabel htmlFor="company">Company</FieldLabel>
-                      <input
-                        type="text"
-                        id="company"
-                        name="company"
-                        value={form.company}
-                        onChange={handleChange}
-                        placeholder="Organization (optional)"
-                        className={inputClass}
-                      />
-                    </div>
+                    {detailFields.map((field) => (
+                      <div key={field.id} className={field.fullWidth ? "sm:col-span-2" : undefined}>
+                        <FieldLabel htmlFor={field.id}>
+                          {field.label}
+                          {field.required ? " *" : ""}
+                        </FieldLabel>
+                        {field.type === "select" ? (
+                          <select
+                            id={field.id}
+                            name={field.id}
+                            value={String(form[field.id] ?? "")}
+                            onChange={handleChange}
+                            required={field.required}
+                            className={inputClass}
+                          >
+                            {field.options?.map((opt) => (
+                              <option key={opt.value} value={opt.value}>
+                                {opt.label}
+                              </option>
+                            ))}
+                          </select>
+                        ) : (
+                          <input
+                            type={field.type ?? "text"}
+                            id={field.id}
+                            name={field.id}
+                            value={String(form[field.id] ?? "")}
+                            onChange={handleChange}
+                            placeholder={field.placeholder}
+                            required={field.required}
+                            className={inputClass}
+                          />
+                        )}
+                      </div>
+                    ))}
                   </div>
                 </motion.div>
               )}
 
               {step === 2 && (
                 <motion.div
-                  key="step-2"
+                  key={`step-2-${activeType}`}
                   custom={direction}
                   variants={formVariants}
                   initial="enter"
@@ -398,19 +546,17 @@ export default function EditorialContactForm({ onSubmitted }: Props) {
                   className="flex flex-col gap-5"
                 >
                   <div>
-                    <h2 className="font-display text-xl font-bold text-navy sm:text-2xl">Your message</h2>
-                    <p className="mt-2 text-sm text-text-muted">
-                      Share your question, partnership idea, or how we can help.
-                    </p>
+                    <h2 className="font-display text-xl font-bold text-navy sm:text-2xl">{messageConfig.title}</h2>
+                    <p className="mt-2 text-sm text-text-muted">{messageConfig.subtitle}</p>
                   </div>
                   <div>
-                    <FieldLabel htmlFor="message">Message *</FieldLabel>
+                    <FieldLabel htmlFor="message">{messageConfig.label} *</FieldLabel>
                     <textarea
                       id="message"
                       name="message"
                       value={form.message}
                       onChange={handleChange}
-                      placeholder="Tell us about your enquiry..."
+                      placeholder={messageConfig.placeholder}
                       rows={5}
                       required
                       className={`${inputClass} min-h-[140px] resize-y`}
@@ -425,6 +571,21 @@ export default function EditorialContactForm({ onSubmitted }: Props) {
                     <p className="mt-1">
                       <span className="font-semibold text-navy">From:</span> {form.name || "—"} · {form.email || "—"}
                     </p>
+                    {form.company && activeType !== "careers" && (
+                      <p className="mt-1">
+                        <span className="font-semibold text-navy">Company:</span> {form.company}
+                      </p>
+                    )}
+                    {activeType === "careers" && form.roleInterest && (
+                      <p className="mt-1">
+                        <span className="font-semibold text-navy">Role:</span> {form.roleInterest}
+                      </p>
+                    )}
+                    {activeType === "media" && form.mediaOutlet && (
+                      <p className="mt-1">
+                        <span className="font-semibold text-navy">Outlet:</span> {form.mediaOutlet}
+                      </p>
+                    )}
                   </div>
                 </motion.div>
               )}

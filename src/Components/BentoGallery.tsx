@@ -13,6 +13,8 @@ import { easeOut } from "../utils/motion";
 export type BentoGalleryImage = {
   src: string;
   alt: string;
+  title?: string;
+  caption?: string;
 };
 
 type BentoGalleryProps = {
@@ -211,7 +213,7 @@ export default function BentoGallery({
                 </>
               )}
 
-              <div className="pointer-events-none fixed left-1/2 top-1/2 z-[2001] max-h-[85vh] max-w-[90vw] -translate-x-1/2 -translate-y-1/2">
+              <div className="pointer-events-none fixed left-1/2 top-1/2 z-[2001] flex max-h-[85vh] max-w-[90vw] -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-3">
                 <motion.img
                   key={activeImage.src}
                   initial={{ opacity: 0, scale: 0.92 }}
@@ -220,9 +222,19 @@ export default function BentoGallery({
                   transition={{ duration: 0.3, ease: easeOut }}
                   src={activeImage.src}
                   alt={activeImage.alt}
-                  className="pointer-events-auto block max-h-[85vh] w-auto max-w-[90vw] rounded-2xl border border-navy/25 object-contain shadow-2xl"
+                  className="pointer-events-auto block max-h-[75vh] w-auto max-w-[90vw] rounded-2xl border border-navy/25 object-contain shadow-2xl"
                   onClick={(e) => e.stopPropagation()}
                 />
+                {(activeImage.title || activeImage.caption) && (
+                  <div className="max-w-lg px-4 text-center">
+                    {activeImage.title && (
+                      <p className="font-display text-sm font-bold text-white sm:text-base">{activeImage.title}</p>
+                    )}
+                    {activeImage.caption && (
+                      <p className="mt-1 text-xs leading-relaxed text-white/80 sm:text-sm">{activeImage.caption}</p>
+                    )}
+                  </div>
+                )}
               </div>
             </motion.div>
           </AnimatePresence>,

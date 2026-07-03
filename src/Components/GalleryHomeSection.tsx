@@ -7,13 +7,7 @@ import SectionViewAllLink from "./SectionViewAllLink";
 const FEATURED_TILE_WIDTH = 960;
 const MOSAIC_TILE_WIDTH = 480;
 
-const categoryLabel: Record<string, string> = {
-  facility: "Facility",
-  events: "Events",
-  hardware: "Hardware",
-  team: "Team",
-  news: "News",
-};
+import { mediaCategoryLabel } from "../data/mediaCategories";
 
 const GALLERY_HOME_ITEMS = galleryItems.slice(0, 5);
 
@@ -48,7 +42,7 @@ function MosaicTile({
       <div className="absolute inset-0 bg-gradient-to-t from-deep/90 via-deep/20 to-transparent opacity-80" />
       <div className="absolute inset-x-0 bottom-0 p-3 sm:p-4">
         <span className="font-display text-[0.625rem] font-bold uppercase tracking-wider text-petal">
-          {categoryLabel[item.category] ?? item.category}
+          {mediaCategoryLabel[item.category] ?? item.category}
         </span>
         <p
           className={`mt-0.5 font-display font-semibold leading-snug text-white ${
@@ -57,6 +51,9 @@ function MosaicTile({
         >
           {item.title}
         </p>
+        {item.caption && large && (
+          <p className="mt-1 line-clamp-2 text-[0.65rem] leading-snug text-white/75 sm:text-xs">{item.caption}</p>
+        )}
       </div>
     </Link>
   );

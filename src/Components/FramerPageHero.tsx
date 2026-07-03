@@ -76,6 +76,9 @@ export function FramerPageShell({ children }: { children: ReactNode }) {
   );
 }
 
+/** Tighter vertical padding for gallery, press, videos, and publications */
+export const mediaPageSectionClass = "py-6 sm:py-8 lg:py-10";
+
 export function PageContentSection({
   id,
   children,

@@ -79,6 +79,8 @@ export type MediaImage = {
   caption: string;
   imageUrl: string;
   category: "facility" | "events" | "hardware" | "team" | "news";
+  /** Lower value appears first on the site (1 = first). */
+  sortOrder?: number;
 };
 
 export const heroSlides: HeroSlide[] = [
@@ -127,7 +129,7 @@ export const companyStoryImages: MediaImage[] = [
   },
 ];
 
-export const newsMediaImages: MediaImage[] = [
+export const newsMediaImages: MediaImage[] = ([
   {
     id: "news-4",
     title: "Quantum computing achieves an indigenous milestone",
@@ -165,7 +167,7 @@ export const newsMediaImages: MediaImage[] = [
     category: "news",
   },
   
-];
+].map((item, index) => ({ ...item, sortOrder: index + 1 }))) as MediaImage[];
 
 export type SiteVideo = {
   id: string;

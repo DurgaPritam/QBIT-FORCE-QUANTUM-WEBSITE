@@ -1,9 +1,11 @@
 import { useState } from "react";
 import ArticleBentoGallery from "../Components/ArticleBentoGallery";
-import FramerPageHero, { FramerPageShell, PageContentSection } from "../Components/FramerPageHero";
-import { articleCategories, articles } from "../data/articlesData";
+import FramerPageHero, { FramerPageShell, mediaPageSectionClass, PageContentSection } from "../Components/FramerPageHero";
+import { articleCategories } from "../data/articlesData";
+import { useArticles } from "../hooks/useApiContent";
 
 function Publications() {
+  const { items: articles } = useArticles();
   const [activeCategory, setActiveCategory] = useState<string>("all");
 
   const filtered =
@@ -24,8 +26,8 @@ function Publications() {
         ]}
       />
 
-      <PageContentSection id="publications">
-        <div className="mb-6 flex flex-wrap justify-center gap-2 sm:mb-8">
+      <PageContentSection id="publications" className={mediaPageSectionClass}>
+        <div className="mb-4 flex flex-wrap justify-center gap-2 sm:mb-5">
           {articleCategories.map((cat) => (
             <button
               key={cat.id}

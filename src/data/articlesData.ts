@@ -9,6 +9,8 @@ export type Article = {
   featured?: boolean;
   imageUrl?: string;
   link?: string;
+  /** Lower value appears first on the site (1 = first). */
+  sortOrder?: number;
 };
 
 export const articles: Article[] = [
@@ -90,7 +92,7 @@ export const articles: Article[] = [
       "https://res.cloudinary.com/dps46p3m8/image/upload/v1781024008/1780987927822_nfgvuk.jpg",
     link: "https://www.linkedin.com/posts/bharatstrategicapexinstitute-bsai-theindiaway-ugcPost-7470006850126741504-P-St/",
   },
-];
+].map((article, index) => ({ ...article, sortOrder: index + 1 })) as Article[];
 
 export const articleCategories = [
   { id: "all", label: "All" },
