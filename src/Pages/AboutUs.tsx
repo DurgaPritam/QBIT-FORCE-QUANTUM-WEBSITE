@@ -247,9 +247,7 @@ function AboutUs() {
                     loading="lazy"
                   />
                 </div>
-                <div className="absolute left-5 top-5 rounded-full border border-white/30 bg-navy/90 px-4 py-2 font-display text-[0.6875rem] font-bold uppercase tracking-widest text-white backdrop-blur-sm">
-                  Amaravati, AP
-                </div>
+                
               </div>
             </motion.div>
 

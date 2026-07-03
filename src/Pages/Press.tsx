@@ -1,9 +1,31 @@
+import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import PressBentoGallery from "../Components/PressBentoGallery";
-import FramerPageHero, { FramerPageShell, PageContentSection } from "../Components/FramerPageHero";
-import { newsMediaImages } from "../content/mediaHub";
+import MediaCategoryFilter from "../Components/MediaCategoryFilter";
+import FramerPageHero, { FramerPageShell, mediaPageSectionClass, PageContentSection } from "../Components/FramerPageHero";
+import { usePressMedia } from "../hooks/useApiContent";
+import { mediaCategories } from "../data/mediaCategories";
 
 function Press() {
+  const { items: newsMediaImages } = usePressMedia();
+  const [category, setCategory] = useState("all");
+
+  const categoryCounts = useMemo(() => {
+    const counts: Record<string, number> = { all: newsMediaImages.length };
+    for (const cat of mediaCategories) {
+      if (cat.id !== "all") counts[cat.id] = 0;
+    }
+    for (const item of newsMediaImages) {
+      counts[item.category] = (counts[item.category] ?? 0) + 1;
+    }
+    return counts;
+  }, [newsMediaImages]);
+
+  const filteredItems = useMemo(
+    () => (category === "all" ? newsMediaImages : newsMediaImages.filter((item) => item.category === category)),
+    [newsMediaImages, category],
+  );
+
   return (
     <FramerPageShell>
       <FramerPageHero
@@ -17,10 +39,21 @@ function Press() {
         ]}
       />
 
-      <PageContentSection id="press">
-        <PressBentoGallery items={newsMediaImages} />
+      <PageContentSection id="press" className={mediaPageSectionClass}>
+        <div className="mb-4">
+          <p className="mb-2 font-display text-sm font-bold text-navy">Filter by category</p>
+          <MediaCategoryFilter value={category} onChange={setCategory} counts={categoryCounts} />
+        </div>
 
-        <div className="mt-10 rounded-2xl border-b-[3px] border-b-petal bg-gradient-to-br from-deep to-mid p-6 text-center sm:mt-12 sm:p-10">
+        {filteredItems.length === 0 ? (
+          <p className="rounded-2xl border border-border bg-white px-6 py-12 text-center text-sm text-text-muted">
+            No press items in this category yet.
+          </p>
+        ) : (
+          <PressBentoGallery items={filteredItems} />
+        )}
+
+        <div className="mt-6 rounded-2xl border-b-[3px] border-b-petal bg-gradient-to-br from-deep to-mid p-5 text-center sm:mt-8 sm:p-8">
           <p className="mb-5 text-sm text-white/90 sm:text-lg">Media & press enquiries</p>
           <Link
             to="/contactus"

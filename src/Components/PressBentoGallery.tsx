@@ -41,7 +41,7 @@ function PressCard({ item, onOpen }: { item: MediaImage; onOpen: () => void }) {
       className="group flex w-full cursor-pointer flex-col overflow-hidden rounded-2xl border border-border bg-white text-left shadow-sm transition-shadow hover:border-navy/15 hover:shadow-lg"
       aria-label={`View ${item.title}`}
     >
-      <div className="flex min-h-[320px] items-center justify-center bg-[#f7f5f2] p-5 sm:min-h-[380px] sm:p-8">
+      <div className="flex min-h-[260px] items-center justify-center bg-[#f7f5f2] p-4 sm:min-h-[320px] sm:p-5">
         <img
           src={item.imageUrl}
           alt=""
@@ -51,7 +51,7 @@ function PressCard({ item, onOpen }: { item: MediaImage; onOpen: () => void }) {
         />
       </div>
 
-      <div className="flex flex-1 flex-col p-5 sm:p-6">
+      <div className="flex flex-1 flex-col p-4 sm:p-5">
         <span className="font-display text-[0.625rem] font-bold uppercase tracking-wider text-petal">
           Press
         </span>
@@ -117,7 +117,7 @@ export default function PressBentoGallery({ items, className = "" }: PressBentoG
         whileInView="visible"
         viewport={viewportTight}
         variants={stagger}
-        className={`grid gap-6 sm:grid-cols-2 sm:gap-8 lg:grid-cols-3 ${className}`}
+        className={`grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3 ${className}`}
       >
         {items.map((item, index) => (
           <PressCard key={item.id} item={item} onOpen={() => openLightbox(index)} />

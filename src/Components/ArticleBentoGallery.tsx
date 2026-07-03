@@ -283,14 +283,14 @@ export default function ArticleBentoGallery({ articles, className = "" }: Articl
         whileInView="visible"
         viewport={viewportTight}
         variants={stagger}
-        className={`flex flex-col gap-6 sm:gap-8 ${className}`}
+        className={`flex flex-col gap-3 sm:gap-4 ${className}`}
       >
         {featured && (
           <ArticleCard article={featured} featured onOpen={() => openLightbox(0)} />
         )}
 
         {rest.length > 0 && (
-          <div className="grid gap-6 sm:grid-cols-2 sm:gap-8">
+          <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
             {rest.map((article, i) => (
               <ArticleCard
                 key={article.id}

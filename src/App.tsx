@@ -1,5 +1,5 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { lazy } from "react";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { lazy, Suspense } from "react";
 import MainContent, { useRouteLoading } from "./Layout/MainContent.tsx";
 import LoadingScreen from "./Components/LoadingScreen.tsx";
 import ScrollToTop from "./Components/ScrollToTop.tsx";
@@ -18,20 +18,24 @@ const Publications = lazy(() => import("./Pages/Publications.tsx"));
 const Videos = lazy(() => import("./Pages/Videos.tsx"));
 const Press = lazy(() => import("./Pages/Press.tsx"));
 
-function AppRoutes() {
+const AdminApp = lazy(() => import("./Pages/admin/AdminApp.tsx"));
+
+function AdminFallback() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-slate-100">
+      <div className="h-8 w-8 animate-spin rounded-full border-2 border-navy border-t-transparent" />
+    </div>
+  );
+}
+
+function PublicApp() {
   const { visible, exiting, handlePageReady, handleExitComplete, loaderKey } = useRouteLoading();
 
   return (
     <>
       {visible && (
-        <LoadingScreen
-          key={loaderKey}
-          exiting={exiting}
-          onExitComplete={handleExitComplete}
-        />
+        <LoadingScreen key={loaderKey} exiting={exiting} onExitComplete={handleExitComplete} />
       )}
-      <ScrollToTop />
-      <PageMeta />
       <Routes>
         <Route element={<MainContent onPageReady={handlePageReady} />}>
           <Route path="/" element={<Home />} />
@@ -52,12 +56,29 @@ function AppRoutes() {
   );
 }
 
+function AppShell() {
+  const location = useLocation();
+  const isAdmin = location.pathname.startsWith("/qbitadmin");
+
+  return (
+    <>
+      <ScrollToTop />
+      <PageMeta />
+      {!isAdmin && <CursorDotTrail />}
+      <Suspense fallback={isAdmin ? <AdminFallback /> : null}>
+        {isAdmin ? <AdminApp /> : <PublicApp />}
+      </Suspense>
+    </>
+  );
+}
+
 function App() {
   return (
     <BrowserRouter>
       <div className="flex min-h-screen flex-col text-left">
-        <CursorDotTrail />
-        <AppRoutes />
+        <Routes>
+          <Route path="/*" element={<AppShell />} />
+        </Routes>
       </div>
     </BrowserRouter>
   );

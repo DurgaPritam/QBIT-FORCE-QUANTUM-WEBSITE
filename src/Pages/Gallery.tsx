@@ -1,22 +1,54 @@
-import { useState } from "react";
-import { galleryItems } from "../data/galleryData";
+import { useMemo, useState } from "react";
+import { useGalleryItems } from "../hooks/useApiContent";
 import BentoGallery from "../Components/BentoGallery";
-import FramerPageHero, { FramerPageShell, PageContentSection } from "../Components/FramerPageHero";
+import MediaCategoryFilter from "../Components/MediaCategoryFilter";
+import FramerPageHero, { FramerPageShell, mediaPageSectionClass, PageContentSection } from "../Components/FramerPageHero";
+import { mediaCategories } from "../data/mediaCategories";
+import { computeBentoGridLayout, defaultBentoSpanConfig } from "../utils/bentoGridLayout";
 
-const ITEMS_PER_PAGE = 9;
+const GRID_COLUMNS = 3;
+
+function galleryGridRows(imageCount: number): number {
+  if (imageCount <= 0) return 3;
+  const spanConfig = defaultBentoSpanConfig();
+  let rows = 3;
+  while (
+    computeBentoGridLayout(GRID_COLUMNS, rows, imageCount, true, spanConfig).filter(
+      (cell) => cell.imageIndex !== null,
+    ).length < imageCount
+  ) {
+    rows++;
+  }
+  return rows;
+}
 
 function Gallery() {
-  const [currentPage, setCurrentPage] = useState(1);
+  const { items: galleryItems } = useGalleryItems();
+  const [category, setCategory] = useState("all");
 
-  const totalPages = Math.max(1, Math.ceil(galleryItems.length / ITEMS_PER_PAGE));
-  const pageItems = galleryItems.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE,
+  const categoryCounts = useMemo(() => {
+    const counts: Record<string, number> = { all: galleryItems.length };
+    for (const cat of mediaCategories) {
+      if (cat.id !== "all") counts[cat.id] = 0;
+    }
+    for (const item of galleryItems) {
+      counts[item.category] = (counts[item.category] ?? 0) + 1;
+    }
+    return counts;
+  }, [galleryItems]);
+
+  const filteredItems = useMemo(
+    () => (category === "all" ? galleryItems : galleryItems.filter((item) => item.category === category)),
+    [galleryItems, category],
   );
 
-  const bentoImages = pageItems.map((item) => ({
+  const gridRows = galleryGridRows(filteredItems.length);
+
+  const bentoImages = filteredItems.map((item) => ({
     src: item.imageUrl,
     alt: item.title,
+    title: item.title,
+    caption: item.caption,
   }));
 
   return (
@@ -32,44 +64,29 @@ function Gallery() {
         ]}
       />
 
-      <PageContentSection id="gallery">
+      <PageContentSection id="gallery" className={mediaPageSectionClass}>
+        <div className="mb-4">
+          <p className="mb-2 font-display text-sm font-bold text-navy">Filter by category</p>
+          <MediaCategoryFilter value={category} onChange={setCategory} counts={categoryCounts} />
+        </div>
+
+        {filteredItems.length === 0 ? (
+          <p className="rounded-2xl border border-border bg-white px-6 py-12 text-center text-sm text-text-muted">
+            No gallery items in this category yet.
+          </p>
+        ) : (
           <BentoGallery
             images={bentoImages}
-            gap={10}
-            borderRadius={20}
-            enableSpanning
+            gap={6}
+            borderRadius={16}
+            enableSpanning={filteredItems.length > 0}
             enableLightbox
-            minHeight={560}
+            minHeight={Math.max(560, gridRows * 200)}
             spanConfig={[{ imageIndex: 0, colSpan: 2, rowSpan: 2 }]}
-            gridColumns={3}
-            gridRows={3}
+            gridColumns={GRID_COLUMNS}
+            gridRows={gridRows}
           />
-
-          {totalPages > 1 && (
-            <div className="mt-12 flex items-center justify-center gap-2">
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                <button
-                  key={page}
-                  type="button"
-                  onClick={() => setCurrentPage(page)}
-                  aria-label={`Page ${page}`}
-                  aria-current={currentPage === page ? "page" : undefined}
-                  className={`h-2.5 w-2.5 cursor-pointer rounded-full border-none transition-colors ${
-                    currentPage === page ? "bg-navy" : "bg-border hover:bg-navy/40"
-                  }`}
-                />
-              ))}
-              <button
-                type="button"
-                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                disabled={currentPage >= totalPages}
-                aria-label="Next page"
-                className="ml-2 flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border-none bg-navy text-white transition hover:bg-navy-light disabled:cursor-not-allowed disabled:opacity-40"
-              >
-                →
-              </button>
-            </div>
-          )}
+        )}
       </PageContentSection>
     </FramerPageShell>
   );
