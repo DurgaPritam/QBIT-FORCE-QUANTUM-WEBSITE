@@ -13,6 +13,28 @@ const perks = [
 
 const openRoles = [
   {
+    id: "quantum-device-engineer",
+    title: "Quantum Device Engineer",
+    summary:
+      "Design and simulate quantum microwave hardware — processors, resonators, and critical components — using KLayout and EM tools to turn ideas into manufacturable quantum devices.",
+    department: "Quantum Hardware Design",
+    type: "Full Time",
+    location: "Remote / Amaravati (AP)",
+    experience: "Immediate joining",
+    immediate: true,
+    highlights: [
+      "KLayout for 2D/3D layout, DRC, LVS & GDSII",
+      "EM simulation (HFSS, Sonnet, COMSOL)",
+      "Superconducting quantum hardware & microwave engineering",
+      "Fabrication process knowledge & design documentation",
+    ],
+    applyEmail: "scq@qbitforcequantum.com",
+    imageUrl:
+      "https://res.cloudinary.com/dps46p3m8/image/upload/v1783745584/1783182288702_xmfzg2.jpg",
+    linkedInUrl:
+      "https://www.linkedin.com/posts/qbit-force_hiring-quantumcomputing-quantumhardware-activity-7479208610372243456-0V5S/",
+  },
+  {
     id: "quantum-control-software-engineer",
     title: "Full-Stack Quantum Control Software Engineer",
     summary:
@@ -64,6 +86,7 @@ const openRoles = [
     type: "Full Time",
     location: "Amaravati Quantum Valley",
     experience: "2–15 years · All levels",
+    immediate: true,
     highlights: [
       "RF & Microwave Engineer",
       "Quantum Processor Design Engineer",
@@ -111,7 +134,7 @@ function JobRow({ role, index }: { role: (typeof openRoles)[number]; index: numb
         <span className="rounded-full bg-navy/5 px-2 py-0.5 font-display text-[0.625rem] font-semibold text-navy sm:px-2.5 sm:py-1 sm:text-[0.6875rem]">
           {role.type}
         </span>
-        {index === 2 && (
+        {"immediate" in role && role.immediate && (
           <span className="rounded-full bg-petal px-2 py-0.5 font-display text-[0.625rem] font-bold uppercase tracking-wider text-white sm:px-2.5 sm:py-1 sm:text-[0.6875rem]">
             Immediate
           </span>
