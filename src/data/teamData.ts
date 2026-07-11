@@ -31,7 +31,7 @@ export const coreTeamMembers: TeamMember[] = [
 export const teamMembers: TeamMember[] = [
   {
     id: 1,
-    name: "Nagalakshmaiah Kalva",
+    name: "Dr. Nagalakshmaiah Kalva",
     role: "",
     image: teamPhotoUrls.nagalakshmaiah,
   },
@@ -43,7 +43,7 @@ export const teamMembers: TeamMember[] = [
   },
   {
     id: 3,
-    name: "Durga Pritam Suggisetti",
+    name: "Durga Pritam",
     role: "",
     image: teamPhotoUrls.durgaPritam,
   },
@@ -73,7 +73,7 @@ export const teamMembers: TeamMember[] = [
   },
   {
     id: 8,
-    name: "Prasanta Kumbhakar",
+    name: "Dr. Prasanta Kumbhakar",
     role: "",
     image: teamPhotoUrls.Prasanta_Kumbhakar,
   },
@@ -92,7 +92,7 @@ export const teamMembers: TeamMember[] = [
   
   {
     id: 11,
-    name: "Isha Choudhary",
+    name: "Isha Chaudhary",
     role: "",
     image: teamPhotoUrls.ishaChoudhary,
   },
