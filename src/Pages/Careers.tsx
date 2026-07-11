@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import FramerPageHero, { FramerPageShell, PageContentSection } from "../Components/FramerPageHero";
 import LazyImage from "../Components/LazyImage";
+import { CONTACT_EMAIL } from "../config/site";
 import { fadeUp, springSnappy, stagger, viewportTight } from "../utils/motion";
 
 const perks = [
@@ -12,6 +13,29 @@ const perks = [
 ];
 
 const openRoles = [
+  {
+    id: "quantum-device-engineer",
+    title: "Quantum Device Engineer",
+    summary:
+      "Design and simulate quantum microwave hardware — processors, resonators, and critical components — using KLayout and EM tools to turn ideas into manufacturable quantum devices.",
+    department: "Quantum Hardware Design",
+    type: "Full Time",
+    location: "Remote / Amaravati (AP)",
+    experience: "Immediate joining · KLayout required",
+    immediate: true,
+    highlights: [
+      "KLayout for 2D/3D layout, DRC, LVS & GDSII",
+      "EM simulation (HFSS, Sonnet, COMSOL)",
+      "Superconducting quantum hardware & microwave engineering",
+      "Collaborate with fabrication and measurement teams",
+      "Design documentation and version control",
+    ],
+    applyEmail: CONTACT_EMAIL,
+    imageUrl:
+      "https://res.cloudinary.com/dps46p3m8/image/upload/v1783745584/1783182288702_xmfzg2.jpg",
+    linkedInUrl:
+      "https://www.linkedin.com/posts/qbit-force_hiring-quantumcomputing-quantumhardware-activity-7479208610372243456-0V5S",
+  },
   {
     id: "quantum-control-software-engineer",
     title: "Full-Stack Quantum Control Software Engineer",
@@ -28,7 +52,7 @@ const openRoles = [
       "Linux systems, C/C++, Git & CI/CD",
       "FPGA integration & performance optimization",
     ],
-    applyEmail: "hiring@qbitforcequantum.com",
+    applyEmail: CONTACT_EMAIL,
     imageUrl:
       "https://res.cloudinary.com/dps46p3m8/image/upload/v1782465512/1781677755188_om6awa.jpg",
     linkedInUrl:
@@ -49,7 +73,7 @@ const openRoles = [
       "FPGA interface electronics & RF control systems",
       "Cryogenic measurement & high-frequency PCB design",
     ],
-    applyEmail: "electronics@qbitforcequantum.com",
+    applyEmail: CONTACT_EMAIL,
     imageUrl:
       "https://res.cloudinary.com/dps46p3m8/image/upload/v1781373073/1780227838904_uvzwjm.jpg",
     linkedInUrl:
@@ -64,13 +88,14 @@ const openRoles = [
     type: "Full Time",
     location: "Amaravati Quantum Valley",
     experience: "2–15 years · All levels",
+    immediate: true,
     highlights: [
       "RF & Microwave Engineer",
       "Quantum Processor Design Engineer",
       "Senior Quantum Scientist",
       "Superconducting qubits, cQED & cryogenic instrumentation",
     ],
-    applyEmail: "scq@qbitforcequantum.com",
+    applyEmail: CONTACT_EMAIL,
     imageUrl:
       "https://res.cloudinary.com/dps46p3m8/image/upload/v1781373074/1779640657238_prqy2l.jpg",
     linkedInUrl:
@@ -83,16 +108,16 @@ function JobRow({ role, index }: { role: (typeof openRoles)[number]; index: numb
 
   const imageBlock = (
     <div
-      className={`order-1 min-w-0 bg-[#f4f6fb] ${
+      className={`order-1 min-w-0 overflow-hidden bg-[#f4f6fb] ${
         imageOnLeft ? "lg:order-1" : "lg:order-2"
       }`}
     >
-      <div className="relative mx-auto aspect-[4/5] w-full max-h-[min(72vw,340px)] sm:aspect-[5/6] sm:max-h-[380px] lg:aspect-auto lg:max-h-none lg:min-h-[360px]">
+      <div className="relative aspect-[3/4] w-full sm:aspect-[4/5] lg:aspect-auto lg:h-full lg:min-h-[420px]">
         <LazyImage
           src={role.imageUrl}
           alt={`${role.title} — Qbit Force hiring poster`}
           optimizeWidth={960}
-          className="absolute inset-0 h-full w-full object-contain object-center p-2 transition duration-500 group-hover:scale-[1.02] sm:p-4"
+          className="absolute inset-0 h-full w-full object-cover object-top transition duration-500 group-hover:scale-[1.02]"
         />
       </div>
     </div>
@@ -111,7 +136,7 @@ function JobRow({ role, index }: { role: (typeof openRoles)[number]; index: numb
         <span className="rounded-full bg-navy/5 px-2 py-0.5 font-display text-[0.625rem] font-semibold text-navy sm:px-2.5 sm:py-1 sm:text-[0.6875rem]">
           {role.type}
         </span>
-        {index === 2 && (
+        {"immediate" in role && role.immediate && (
           <span className="rounded-full bg-petal px-2 py-0.5 font-display text-[0.625rem] font-bold uppercase tracking-wider text-white sm:px-2.5 sm:py-1 sm:text-[0.6875rem]">
             Immediate
           </span>
