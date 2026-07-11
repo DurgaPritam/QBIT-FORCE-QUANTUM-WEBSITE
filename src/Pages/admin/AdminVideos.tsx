@@ -1,29 +1,46 @@
 import { useState, type FormEvent } from "react";
 import CloudinaryUploadField from "../../Components/admin/CloudinaryUploadField";
 import type { VideoItem } from "../../api/types";
-import { CaptionField, emptyVideo, SlugField, SortOrderField, TitleField } from "./adminFormDefaults";
+import { CaptionField, emptyVideo, SortOrderField, TitleField } from "./adminFormDefaults";
 import { AdminDataTable, AdminPageShell, deleteCrudItem, inputClass, saveCrudItem, useAdminList } from "./adminShared";
 import { useAdminRefresh } from "./AdminLayout";
 
 export default function AdminVideos() {
   const { refreshKey } = useAdminRefresh();
-  const { items, error, reload } = useAdminList<VideoItem>("/admin/videos", refreshKey);
+  const { items, error, reload, setError } = useAdminList<VideoItem>("/admin/videos", refreshKey);
   const [editing, setEditing] = useState<VideoItem | null>(null);
   const [editingOriginalId, setEditingOriginalId] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
 
   const save = async (e: FormEvent) => {
     e.preventDefault();
     if (!editing) return;
-    await saveCrudItem("/admin/videos", editing, items, editingOriginalId);
-    setEditing(null);
-    setEditingOriginalId(null);
-    await reload();
+    setBusy(true);
+    setError(null);
+    try {
+      await saveCrudItem("/admin/videos", editing, items, editingOriginalId);
+      setEditing(null);
+      setEditingOriginalId(null);
+      await reload();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to save video");
+    } finally {
+      setBusy(false);
+    }
   };
 
   const remove = async (id: string) => {
     if (!window.confirm("Delete this video?")) return;
-    await deleteCrudItem("/admin/videos", id);
-    await reload();
+    setBusy(true);
+    setError(null);
+    try {
+      await deleteCrudItem("/admin/videos", id);
+      await reload();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to delete video");
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (
@@ -33,9 +50,8 @@ export default function AdminVideos() {
       </button>
       {editing && (
         <form onSubmit={save} className="mb-6 grid gap-3 rounded-xl border border-border bg-slate-50 p-4 sm:grid-cols-2">
-          <SlugField value={editing.id} onChange={(id) => setEditing({ ...editing, id })} placeholder="e.g. qf-video-1" />
-          <SortOrderField value={editing.sortOrder} onChange={(sortOrder) => setEditing({ ...editing, sortOrder })} />
           <TitleField value={editing.title} onChange={(title) => setEditing({ ...editing, title })} />
+          <SortOrderField value={editing.sortOrder} onChange={(sortOrder) => setEditing({ ...editing, sortOrder })} />
           <div>
             <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-text-muted">Duration</label>
             <input value={editing.duration} onChange={(e) => setEditing({ ...editing, duration: e.target.value })} placeholder="e.g. 3 min" className={inputClass} />
@@ -59,16 +75,15 @@ export default function AdminVideos() {
           </div>
           <CloudinaryUploadField label="Thumbnail" value={editing.thumbnail ?? ""} onChange={(thumbnail) => setEditing({ ...editing, thumbnail })} />
           <div className="flex gap-2 sm:col-span-2">
-            <button type="submit" className="rounded-full bg-navy px-4 py-2 text-sm text-white">Save</button>
-            <button type="button" onClick={() => setEditing(null)} className="rounded-full border px-4 py-2 text-sm">Cancel</button>
+            <button type="submit" disabled={busy} className="rounded-full bg-navy px-4 py-2 text-sm text-white disabled:opacity-50">Save</button>
+            <button type="button" onClick={() => { setEditing(null); setEditingOriginalId(null); }} className="rounded-full border px-4 py-2 text-sm">Cancel</button>
           </div>
         </form>
       )}
       <AdminDataTable
-        headers={["Order", "Slug", "Title", "Caption", "Actions"]}
+        headers={["Order", "Title", "Caption", "Actions"]}
         rows={items.map((item) => [
           item.sortOrder ?? "—",
-          <span key={`${item.id}-slug`} className="font-mono text-xs text-text-muted">{item.id}</span>,
           item.title,
           <span key={`${item.id}-cap`} className="line-clamp-2 max-w-xs text-text-muted">{item.description || "—"}</span>,
           <span key={item.id} className="space-x-2">

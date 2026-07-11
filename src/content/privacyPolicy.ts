@@ -1,4 +1,5 @@
 import type { LegalSection } from "./legalTypes";
+import { CONTACT_EMAIL, CONTACT_EMAIL_DISPLAY } from "../config/site";
 
 export const privacyPolicy: LegalSection[] = [
   {
@@ -64,7 +65,7 @@ export const privacyPolicy: LegalSection[] = [
     title: "Jurisdiction-Specific Requirements and Implementation",
     paragraphs: [
       "National data protection and privacy laws may impose additional requirements on QbitForce for the Processing of Personal Data. Where required, QbitForce will establish procedures and guidelines in order to supplement the principles of this Policy and engage with relevant regulatory/ supervisory authority, as required.",
-      "To exercise these rights, contact us at info@qbitforcequantum.com",
+      `To exercise these rights, contact us at ${CONTACT_EMAIL}`,
     ],
   },
   {
@@ -101,7 +102,7 @@ export const privacyPolicy: LegalSection[] = [
     title: "Contact Us",
     paragraphs: [
       "If you have any questions about this Privacy Policy, please contact us:",
-      "Email: Info@qbitforcequantum.com",
+      `Email: ${CONTACT_EMAIL_DISPLAY}`,
       "76-8-10/1C, Munnaluri,",
       "Subbarayudu Street, Bhavanipuram,",
       "Krishna, Vijayawada (Urban),",

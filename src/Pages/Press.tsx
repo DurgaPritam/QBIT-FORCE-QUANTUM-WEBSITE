@@ -3,11 +3,11 @@ import { Link } from "react-router-dom";
 import PressBentoGallery from "../Components/PressBentoGallery";
 import MediaCategoryFilter from "../Components/MediaCategoryFilter";
 import FramerPageHero, { FramerPageShell, mediaPageSectionClass, PageContentSection } from "../Components/FramerPageHero";
-import { usePressMedia } from "../hooks/useApiContent";
+import { MediaLoadState, usePressMedia } from "../hooks/useApiContent";
 import { mediaCategories } from "../data/mediaCategories";
 
 function Press() {
-  const { items: newsMediaImages } = usePressMedia();
+  const { items: newsMediaImages, loading, error } = usePressMedia();
   const [category, setCategory] = useState("all");
 
   const categoryCounts = useMemo(() => {
@@ -45,10 +45,13 @@ function Press() {
           <MediaCategoryFilter value={category} onChange={setCategory} counts={categoryCounts} />
         </div>
 
-        {filteredItems.length === 0 ? (
-          <p className="rounded-2xl border border-border bg-white px-6 py-12 text-center text-sm text-text-muted">
-            No press items in this category yet.
-          </p>
+        {loading || error || filteredItems.length === 0 ? (
+          <MediaLoadState
+            loading={loading}
+            error={error}
+            empty={!loading && !error && filteredItems.length === 0}
+            emptyMessage="No press items in this category yet."
+          />
         ) : (
           <PressBentoGallery items={filteredItems} />
         )}

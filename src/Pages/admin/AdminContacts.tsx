@@ -206,10 +206,6 @@ export default function AdminContacts() {
                 <p className="text-xs font-semibold uppercase text-text-muted">Message</p>
                 <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed text-navy">{selected.message}</p>
               </div>
-
-              <p className="text-xs text-text-muted">
-                Email notification: {selected.emailSent ? "Sent successfully" : "Pending or failed"}
-              </p>
             </div>
 
             <div className="flex flex-wrap items-center gap-2 border-t border-border px-5 py-4">

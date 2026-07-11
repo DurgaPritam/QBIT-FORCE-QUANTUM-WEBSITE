@@ -103,7 +103,8 @@ export default function AdminLogin() {
           <img src={loadingScreenLogoUrl} alt="Qbit Force" className="mx-auto mb-4 h-12 w-12 rounded-lg" />
           <h1 className="text-center font-display text-xl font-bold text-navy">Reset Password</h1>
           <p className="mt-2 text-center text-sm text-text-muted">
-            Enter your admin email. We&apos;ll send a reset link.
+            Enter your admin email (<span className="font-semibold text-navy">info@qbitforcequantum.com</span>).
+            A reset link will be written to the server logs.
           </p>
 
           <form onSubmit={handleForgot} className="mt-6 space-y-4">
@@ -112,7 +113,7 @@ export default function AdminLogin() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              placeholder="venkataniharbillakurthi@gmail.com"
+              placeholder="info@qbitforcequantum.com"
               className="w-full rounded-xl border border-border px-4 py-3 text-sm focus:border-navy focus:outline-none"
             />
             {error && <p className="text-sm text-petal" role="alert">{error}</p>}

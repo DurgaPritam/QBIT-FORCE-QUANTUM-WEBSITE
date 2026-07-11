@@ -2,6 +2,19 @@ import type { Article, GalleryItem, PressMediaItem, VideoItem } from "../../api/
 
 export const inputClass = "rounded-lg border border-border px-3 py-2 text-sm w-full";
 
+/** Build a URL-safe id from a media title. */
+export function slugifyTitle(title: string): string {
+  const base = title
+    .trim()
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 80);
+  return base || `item-${Date.now()}`;
+}
+
 export function emptyGallery(): GalleryItem {
   return { id: "", title: "", caption: "", category: "facility", imageUrl: "", sortOrder: 1, active: true };
 }
@@ -60,29 +73,6 @@ export function SortOrderField({
         value={value ?? 1}
         onChange={(e) => onChange(Number(e.target.value) || 1)}
         className={inputClass}
-      />
-    </div>
-  );
-}
-
-export function SlugField({
-  value,
-  onChange,
-  placeholder = "e.g. gallery-srm-leadership-visit",
-}: {
-  value: string;
-  onChange: (slug: string) => void;
-  placeholder?: string;
-}) {
-  return (
-    <div>
-      <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-text-muted">Slug</label>
-      <input
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        className={inputClass}
-        required
       />
     </div>
   );

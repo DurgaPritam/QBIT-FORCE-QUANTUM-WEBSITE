@@ -1,17 +1,12 @@
 import { Link } from "react-router-dom";
-import { articles, type Article } from "../data/articlesData";
+import type { Article } from "../data/articlesData";
+import { useArticles } from "../hooks/useApiContent";
 import { useSectionPreload } from "../hooks/useSectionPreload";
 import OptimizedCoverImage from "./OptimizedCoverImage";
 import SectionViewAllLink from "./SectionViewAllLink";
 
 const BLOG_THUMB_WIDTH = 240;
 const HOME_BLOG_LIMIT = 4;
-
-const homeArticles = articles.slice(0, HOME_BLOG_LIMIT);
-
-const BLOG_PRELOAD_TARGETS = homeArticles
-  .filter((article): article is Article & { imageUrl: string } => Boolean(article.imageUrl))
-  .map((article) => ({ url: article.imageUrl, width: BLOG_THUMB_WIDTH }));
 
 const categorySource: Record<Article["category"], string> = {
   publication: "Blog",
@@ -110,7 +105,14 @@ function LinkedBlogListItem({
 }
 
 function LinkedBlogsSection() {
-  const { sectionRef, preload } = useSectionPreload(BLOG_PRELOAD_TARGETS);
+  const { items: articles } = useArticles();
+  const homeArticles = articles.slice(0, HOME_BLOG_LIMIT);
+  const preloadTargets = homeArticles
+    .filter((article): article is Article & { imageUrl: string } => Boolean(article.imageUrl))
+    .map((article) => ({ url: article.imageUrl, width: BLOG_THUMB_WIDTH }));
+  const { sectionRef, preload } = useSectionPreload(preloadTargets);
+
+  if (homeArticles.length === 0) return null;
 
   return (
     <section

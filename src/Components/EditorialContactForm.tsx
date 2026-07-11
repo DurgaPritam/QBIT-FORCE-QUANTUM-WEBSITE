@@ -1,6 +1,7 @@
 import { useState, type ChangeEvent, type FormEvent, type ReactNode } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { apiRequest } from "../api/client";
+import { CONTACT_EMAIL_DISPLAY, CONTACT_MAILTO } from "../config/site";
 import { easeOut, springSnappy } from "../utils/motion";
 
 type ContactFormData = {
@@ -214,10 +215,10 @@ const contactInfo = [
     label: "Email",
     content: (
       <a
-        href="mailto:Info@qbitforcequantum.com"
+        href={CONTACT_MAILTO}
         className="text-white/90 no-underline transition hover:text-petal"
       >
-        Info@qbitforcequantum.com
+        {CONTACT_EMAIL_DISPLAY}
       </a>
     ),
   },
@@ -392,7 +393,7 @@ export default function EditorialContactForm({ onSubmitted }: Props) {
       onSubmitted?.();
     } catch {
       setSubmitError(
-        "We couldn't send your enquiry right now. Please try again or email Rupa@qbitforcequantum.com directly.",
+        `We couldn't submit your enquiry right now. Please try again or email ${CONTACT_EMAIL_DISPLAY} directly.`,
       );
     } finally {
       setSubmitting(false);

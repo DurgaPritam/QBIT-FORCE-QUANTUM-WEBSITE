@@ -1,9 +1,10 @@
 import VideoBentoGallery from "../Components/VideoBentoGallery";
 import FramerPageHero, { FramerPageShell, mediaPageSectionClass, PageContentSection } from "../Components/FramerPageHero";
-import { useVideos } from "../hooks/useApiContent";
+import { MediaLoadState, useVideos } from "../hooks/useApiContent";
 
 function Videos() {
-  const { items: videos } = useVideos();
+  const { items: videos, loading, error } = useVideos();
+
   return (
     <FramerPageShell>
       <FramerPageHero
@@ -18,17 +19,26 @@ function Videos() {
       />
 
       <PageContentSection id="videos" className={mediaPageSectionClass}>
-        <VideoBentoGallery
-          videos={videos}
-          gap={6}
-          borderRadius={16}
-          enableSpanning
-          hoverAutoplay
-          minHeight={560}
-          spanConfig={[{ imageIndex: 0, colSpan: 2, rowSpan: 2 }]}
-          gridColumns={3}
-          gridRows={3}
-        />
+        {loading || error || videos.length === 0 ? (
+          <MediaLoadState
+            loading={loading}
+            error={error}
+            empty={!loading && !error && videos.length === 0}
+            emptyMessage="No videos yet."
+          />
+        ) : (
+          <VideoBentoGallery
+            videos={videos}
+            gap={6}
+            borderRadius={16}
+            enableSpanning
+            hoverAutoplay
+            minHeight={560}
+            spanConfig={[{ imageIndex: 0, colSpan: 2, rowSpan: 2 }]}
+            gridColumns={3}
+            gridRows={3}
+          />
+        )}
       </PageContentSection>
     </FramerPageShell>
   );

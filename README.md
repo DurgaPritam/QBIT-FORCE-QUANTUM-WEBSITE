@@ -9,6 +9,8 @@ Marketing site (React + Vite) with a Spring Boot CMS backend.
 ```bash
 npm install
 # Create .env with: VITE_API_BASE_URL=http://localhost:8080/api
+# Optional: VITE_CONTACT_EMAIL=info@qbitforcequantum.com
+# Optional: VITE_SITE_URL=https://qbitforcequantum.com
 npm run dev
 ```
 

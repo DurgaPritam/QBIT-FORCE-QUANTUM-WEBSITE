@@ -103,19 +103,29 @@ export function useAdminList<T extends { sortOrder?: number }>(
   return { items, error, reload, setError };
 }
 
-export async function saveCrudItem<T extends { id: string }>(
+export async function saveCrudItem<T extends { id: string; title: string }>(
   path: string,
   item: T,
   existing: T[],
   originalId: string | null,
 ) {
   const { apiRequest } = await import("../../api/client");
-  const slug = item.id.trim();
+  const { slugifyTitle } = await import("./adminFormDefaults");
+
+  const base = slugifyTitle(item.title);
+  let slug = base;
+  let n = 2;
+  while (existing.some((e) => e.id === slug && e.id !== originalId)) {
+    slug = `${base}-${n}`;
+    n += 1;
+  }
+
+  const payload = { ...item, id: slug };
 
   if (originalId) {
     await apiRequest(`${path}/${encodeURIComponent(originalId)}`, {
       method: "PUT",
-      body: { ...item, id: slug },
+      body: payload,
       auth: true,
     });
     return;
@@ -123,11 +133,11 @@ export async function saveCrudItem<T extends { id: string }>(
 
   const isNew = !existing.some((e) => e.id === slug);
   if (isNew) {
-    await apiRequest(path, { method: "POST", body: { ...item, id: slug }, auth: true });
+    await apiRequest(path, { method: "POST", body: payload, auth: true });
   } else {
     await apiRequest(`${path}/${encodeURIComponent(slug)}`, {
       method: "PUT",
-      body: { ...item, id: slug },
+      body: payload,
       auth: true,
     });
   }
@@ -135,5 +145,5 @@ export async function saveCrudItem<T extends { id: string }>(
 
 export async function deleteCrudItem(path: string, id: string) {
   const { apiRequest } = await import("../../api/client");
-  await apiRequest(`${path}/${id}`, { method: "DELETE", auth: true });
+  await apiRequest(`${path}/${encodeURIComponent(id)}`, { method: "DELETE", auth: true });
 }

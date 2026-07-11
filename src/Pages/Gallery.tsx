@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { useGalleryItems } from "../hooks/useApiContent";
+import { useGalleryItems, MediaLoadState } from "../hooks/useApiContent";
 import BentoGallery from "../Components/BentoGallery";
 import MediaCategoryFilter from "../Components/MediaCategoryFilter";
 import FramerPageHero, { FramerPageShell, mediaPageSectionClass, PageContentSection } from "../Components/FramerPageHero";
@@ -23,7 +23,7 @@ function galleryGridRows(imageCount: number): number {
 }
 
 function Gallery() {
-  const { items: galleryItems } = useGalleryItems();
+  const { items: galleryItems, loading, error } = useGalleryItems();
   const [category, setCategory] = useState("all");
 
   const categoryCounts = useMemo(() => {
@@ -70,10 +70,13 @@ function Gallery() {
           <MediaCategoryFilter value={category} onChange={setCategory} counts={categoryCounts} />
         </div>
 
-        {filteredItems.length === 0 ? (
-          <p className="rounded-2xl border border-border bg-white px-6 py-12 text-center text-sm text-text-muted">
-            No gallery items in this category yet.
-          </p>
+        {loading || error || filteredItems.length === 0 ? (
+          <MediaLoadState
+            loading={loading}
+            error={error}
+            empty={!loading && !error && filteredItems.length === 0}
+            emptyMessage="No gallery items in this category yet."
+          />
         ) : (
           <BentoGallery
             images={bentoImages}

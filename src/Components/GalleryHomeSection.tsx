@@ -1,20 +1,13 @@
 import { Link } from "react-router-dom";
-import { galleryItems } from "../data/galleryData";
+import { useGalleryItems } from "../hooks/useApiContent";
 import { useSectionPreload } from "../hooks/useSectionPreload";
 import OptimizedCoverImage from "./OptimizedCoverImage";
 import SectionViewAllLink from "./SectionViewAllLink";
+import { mediaCategoryLabel } from "../data/mediaCategories";
+import type { GalleryItem } from "../data/galleryData";
 
 const FEATURED_TILE_WIDTH = 960;
 const MOSAIC_TILE_WIDTH = 480;
-
-import { mediaCategoryLabel } from "../data/mediaCategories";
-
-const GALLERY_HOME_ITEMS = galleryItems.slice(0, 5);
-
-const GALLERY_PRELOAD_TARGETS = GALLERY_HOME_ITEMS.map((item, index) => ({
-  url: item.imageUrl,
-  width: index === 0 ? FEATURED_TILE_WIDTH : MOSAIC_TILE_WIDTH,
-}));
 
 function MosaicTile({
   item,
@@ -22,7 +15,7 @@ function MosaicTile({
   large = false,
   eager = false,
 }: {
-  item: (typeof galleryItems)[0];
+  item: GalleryItem;
   className?: string;
   large?: boolean;
   eager?: boolean;
@@ -60,8 +53,14 @@ function MosaicTile({
 }
 
 function GalleryHomeSection() {
-  const { sectionRef, preload } = useSectionPreload(GALLERY_PRELOAD_TARGETS);
-  const [featured, ...rest] = GALLERY_HOME_ITEMS;
+  const { items } = useGalleryItems();
+  const homeItems = items.slice(0, 5);
+  const preloadTargets = homeItems.map((item, index) => ({
+    url: item.imageUrl,
+    width: index === 0 ? FEATURED_TILE_WIDTH : MOSAIC_TILE_WIDTH,
+  }));
+  const { sectionRef, preload } = useSectionPreload(preloadTargets);
+  const [featured, ...rest] = homeItems;
 
   if (!featured) return null;
 

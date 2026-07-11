@@ -2,10 +2,10 @@ import { useState } from "react";
 import ArticleBentoGallery from "../Components/ArticleBentoGallery";
 import FramerPageHero, { FramerPageShell, mediaPageSectionClass, PageContentSection } from "../Components/FramerPageHero";
 import { articleCategories } from "../data/articlesData";
-import { useArticles } from "../hooks/useApiContent";
+import { MediaLoadState, useArticles } from "../hooks/useApiContent";
 
 function Publications() {
-  const { items: articles } = useArticles();
+  const { items: articles, loading, error } = useArticles();
   const [activeCategory, setActiveCategory] = useState<string>("all");
 
   const filtered =
@@ -44,7 +44,16 @@ function Publications() {
           ))}
         </div>
 
-        <ArticleBentoGallery articles={filtered} />
+        {loading || error || filtered.length === 0 ? (
+          <MediaLoadState
+            loading={loading}
+            error={error}
+            empty={!loading && !error && filtered.length === 0}
+            emptyMessage="No articles in this category yet."
+          />
+        ) : (
+          <ArticleBentoGallery articles={filtered} />
+        )}
       </PageContentSection>
     </FramerPageShell>
   );

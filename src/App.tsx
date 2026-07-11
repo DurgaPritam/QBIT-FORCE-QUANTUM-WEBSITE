@@ -17,6 +17,7 @@ const Gallery = lazy(() => import("./Pages/Gallery.tsx"));
 const Publications = lazy(() => import("./Pages/Publications.tsx"));
 const Videos = lazy(() => import("./Pages/Videos.tsx"));
 const Press = lazy(() => import("./Pages/Press.tsx"));
+const NotFound = lazy(() => import("./Pages/NotFound.tsx"));
 
 const AdminApp = lazy(() => import("./Pages/admin/AdminApp.tsx"));
 
@@ -50,6 +51,7 @@ function PublicApp() {
           <Route path="/press" element={<Press />} />
           <Route path="/terms" element={<TC />} />
           <Route path="/privacypolicy" element={<PrivacyPolicy />} />
+          <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
     </>

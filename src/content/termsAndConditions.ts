@@ -1,10 +1,11 @@
 import type { LegalSection } from "./legalTypes";
+import { CONTACT_EMAIL_DISPLAY } from "../config/site";
 
 export const termsAndConditions: LegalSection[] = [
   {
     title: "Introduction",
     paragraphs: [
-      'Welcome to the official website of QbitForceQuantum Pvt. Ltd. (Hereinafter referred to as "QbitForce," "we," "us," or "our"). These Terms and Conditions ("Terms") govern your use of the website located at www.qbitforcequantum.com. By accessing or using this Website, you agree to comply with these Terms. If you do not agree to these Terms, please discontinue your use of the Website immediately.',
+      'Welcome to the official website of QbitForceQuantum Pvt. Ltd. (Hereinafter referred to as "QbitForce," "we," "us," or "our"). These Terms and Conditions ("Terms") govern your use of the website located at qbitforcequantum.com. By accessing or using this Website, you agree to comply with these Terms. If you do not agree to these Terms, please discontinue your use of the Website immediately.',
       "We reserve the right to modify these Terms at any time, and your continued use of the Website following any changes constitutes your acceptance of the modified Terms. Please review these Terms periodically to stay informed of any updates.",
     ],
   },
@@ -129,7 +130,7 @@ export const termsAndConditions: LegalSection[] = [
     paragraphs: [
       "If you have any questions or concerns about these Terms, please contact us at:",
       "QbitForceQuantum Pvt. Ltd.",
-      "Email: Info@qbitforcequantum.com",
+      `Email: ${CONTACT_EMAIL_DISPLAY}`,
       "Address: QbitForceQuantum Pvt. Ltd.,",
       "76-8-10/1C, Munnaluri,",
       "Subbarayudu Street, Bhavanipuram,",

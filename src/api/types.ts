@@ -54,7 +54,6 @@ export type ContactSubmission = {
   company: string;
   inquiryType: string;
   message: string;
-  emailSent: boolean;
   read: boolean;
   createdAt: string;
 };

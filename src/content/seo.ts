@@ -1,4 +1,4 @@
-export const SITE_URL = "https://www.qbitforcequantum.com";
+export { SITE_URL } from "../config/site";
 export const SITE_NAME = "Qbit Force Quantum";
 
 export const DEFAULT_DESCRIPTION =

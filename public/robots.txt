@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /qbitadmin-2026-login
 
-Sitemap: https://www.qbitforcequantum.com/sitemap.xml
+Sitemap: https://qbitforcequantum.com/sitemap.xml

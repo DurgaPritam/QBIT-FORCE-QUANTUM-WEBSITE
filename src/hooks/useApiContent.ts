@@ -1,16 +1,11 @@
 import { useEffect, useState } from "react";
 import { apiRequest } from "../api/client";
-import { newsMediaImages, type MediaImage } from "../content/mediaHub";
+import type { MediaImage } from "../content/mediaHub";
 import type { Article } from "../data/articlesData";
 import type { GalleryItem } from "../data/galleryData";
 import type { VideoItem } from "../data/videosData";
-import { galleryItems as staticGallery } from "../data/galleryData";
-import { articles as staticArticles } from "../data/articlesData";
-import { videos as staticVideos } from "../data/videosData";
 
-function mapPressStatic(): MediaImage[] {
-  return newsMediaImages;
-}
+export { MediaLoadState } from "../Components/MediaLoadState";
 
 function sortByOrder<T extends { sortOrder?: number }>(items: T[]) {
   return [...items].sort((a, b) => (a.sortOrder ?? 999) - (b.sortOrder ?? 999));
@@ -25,77 +20,67 @@ function dedupeGalleryById(items: GalleryItem[]): GalleryItem[] {
   });
 }
 
-export function useGalleryItems() {
-  const [items, setItems] = useState<GalleryItem[]>(staticGallery);
+type ContentState<T> = {
+  items: T[];
+  loading: boolean;
+  error: string | null;
+};
+
+function usePublicList<T>(path: string, mapData: (data: T[]) => T[]): ContentState<T> {
+  const [items, setItems] = useState<T[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    apiRequest<GalleryItem[]>("/public/gallery")
+    let cancelled = false;
+    setLoading(true);
+    setError(null);
+    apiRequest<T[]>(path)
       .then((data) => {
-        if (data.length > 0) setItems(sortByOrder(dedupeGalleryById(data)));
+        if (!cancelled) setItems(mapData(data));
       })
-      .catch(() => {})
-      .finally(() => setLoading(false));
-  }, []);
+      .catch((err) => {
+        if (!cancelled) {
+          setItems([]);
+          setError(err instanceof Error ? err.message : "Unable to load content. Please try again.");
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+    // mapData is stable per hook call site for these public lists
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [path]);
 
-  return { items, loading };
+  return { items, loading, error };
+}
+
+export function useGalleryItems() {
+  return usePublicList<GalleryItem>("/public/gallery", (data) =>
+    sortByOrder(dedupeGalleryById(data)),
+  );
 }
 
 export function useVideos() {
-  const [items, setItems] = useState<VideoItem[]>(staticVideos);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    apiRequest<VideoItem[]>("/public/videos")
-      .then((data) => {
-        if (data.length > 0) {
-          setItems(
-            sortByOrder(
-              data.map((v) => ({
-                ...v,
-                thumbnail:
-                  v.thumbnail ??
-                  (v.youtubeId ? `https://img.youtube.com/vi/${v.youtubeId}/hqdefault.jpg` : undefined),
-              })),
-            ),
-          );
-        }
-      })
-      .catch(() => {})
-      .finally(() => setLoading(false));
-  }, []);
-
-  return { items, loading };
+  return usePublicList<VideoItem>("/public/videos", (data) =>
+    sortByOrder(
+      data.map((v) => ({
+        ...v,
+        thumbnail:
+          v.thumbnail ??
+          (v.youtubeId ? `https://img.youtube.com/vi/${v.youtubeId}/hqdefault.jpg` : undefined),
+      })),
+    ),
+  );
 }
 
 export function useArticles() {
-  const [items, setItems] = useState<Article[]>(staticArticles);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    apiRequest<Article[]>("/public/publications")
-      .then((data) => {
-        if (data.length > 0) setItems(sortByOrder(data));
-      })
-      .catch(() => {})
-      .finally(() => setLoading(false));
-  }, []);
-
-  return { items, loading };
+  return usePublicList<Article>("/public/publications", (data) => sortByOrder(data));
 }
 
 export function usePressMedia() {
-  const [items, setItems] = useState<MediaImage[]>(mapPressStatic());
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    apiRequest<MediaImage[]>("/public/press")
-      .then((data) => {
-        if (data.length > 0) setItems(sortByOrder(data));
-      })
-      .catch(() => {})
-      .finally(() => setLoading(false));
-  }, []);
-
-  return { items, loading };
+  return usePublicList<MediaImage>("/public/press", (data) => sortByOrder(data));
 }

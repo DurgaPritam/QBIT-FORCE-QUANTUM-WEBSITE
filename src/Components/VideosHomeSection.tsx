@@ -1,18 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { videos, type VideoItem } from "../data/videosData";
+import type { VideoItem } from "../data/videosData";
+import { useVideos } from "../hooks/useApiContent";
 import { useSectionPreload } from "../hooks/useSectionPreload";
 import OptimizedCoverImage from "./OptimizedCoverImage";
 
 const FEATURED_THUMB_WIDTH = 960;
 const STRIP_THUMB_WIDTH = 280;
-
-const VIDEO_PRELOAD_TARGETS = videos
-  .filter((video): video is VideoItem & { thumbnail: string } => Boolean(video.thumbnail))
-  .map((video, index) => ({
-    url: video.thumbnail,
-    width: index === 0 ? FEATURED_THUMB_WIDTH : STRIP_THUMB_WIDTH,
-  }));
 
 function InlinePlayer({ video }: { video: VideoItem }) {
   if (video.youtubeId) {
@@ -165,12 +159,30 @@ function VideoStripCard({
 }
 
 function VideosHomeSection() {
-  const { sectionRef, preload } = useSectionPreload(VIDEO_PRELOAD_TARGETS);
-  const [featured] = videos;
-  const [activeVideo, setActiveVideo] = useState<VideoItem>(featured ?? videos[0]);
+  const { items: videos } = useVideos();
+  const preloadTargets = videos
+    .filter((video): video is VideoItem & { thumbnail: string } => Boolean(video.thumbnail))
+    .map((video, index) => ({
+      url: video.thumbnail,
+      width: index === 0 ? FEATURED_THUMB_WIDTH : STRIP_THUMB_WIDTH,
+    }));
+  const { sectionRef, preload } = useSectionPreload(preloadTargets);
+  const [activeVideo, setActiveVideo] = useState<VideoItem | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
 
-  if (!featured || !activeVideo) return null;
+  useEffect(() => {
+    if (videos.length === 0) {
+      setActiveVideo(null);
+      setIsPlaying(false);
+      return;
+    }
+    setActiveVideo((prev) => {
+      if (prev && videos.some((v) => v.id === prev.id)) return prev;
+      return videos[0];
+    });
+  }, [videos]);
+
+  if (!activeVideo) return null;
 
   const handleSelectVideo = (video: VideoItem) => {
     setActiveVideo(video);

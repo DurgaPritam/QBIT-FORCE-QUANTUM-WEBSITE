@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { FaEnvelope, FaLinkedinIn } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { footerLogoUrl } from "../content/mediaHub";
+import { CONTACT_MAILTO, SITE_URL } from "../config/site";
 import LazyImage from "./LazyImage";
 
 const taglines = [
@@ -35,12 +36,12 @@ const socialLinks = [
     icon: FaXTwitter,
   },
   {
-    href: "mailto:Info@qbitforcequantum.com",
+    href: CONTACT_MAILTO,
     label: "Email",
     icon: FaEnvelope,
   },
   {
-    href: "https://www.qbitforcequantum.com",
+    href: SITE_URL,
     label: "Website",
     icon: null,
   },
