@@ -61,7 +61,7 @@ function Eye({ isClosed, bgColor, size }: EyeProps) {
           width: pupilR,
           height: pupilR,
           borderRadius: "50%",
-          background: "#00017f",
+          background: "#000080",
           top: "50%",
           left: "50%",
           transform: `translate(calc(-50% + ${pupil.x}px), calc(-50% + ${pupil.y}px))`,
@@ -121,7 +121,7 @@ type AnimatedLoginFaceProps = {
   error?: string | null;
 };
 
-const BACKGROUND = "linear-gradient(145deg, #00017f 0%, #000b29 55%, #000010 100%)";
+const BACKGROUND = "linear-gradient(145deg, #000080 0%, #000b29 55%, #000010 100%)";
 const EYE_BG = "#000b29";
 const EYE_SIZE = 58;
 

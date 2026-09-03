@@ -17,7 +17,7 @@ const navLinkBase =
 
 function navLinkClass(active: boolean) {
   return active
-    ? `${navLinkBase} border-2 border-petal bg-white font-semibold text-navy shadow-[0_4px_14px_rgba(255,30,38,0.15)] hover:bg-[#f7f5f2] hover:text-navy`
+    ? `${navLinkBase} border-2 border-petal bg-white font-semibold text-navy shadow-[0_4px_14px_rgba(245,0,0,0.15)] hover:bg-[#f7f5f2] hover:text-navy`
     : `${navLinkBase} border border-border/80 bg-white text-navy shadow-[0_2px_8px_rgba(0,0,0,0.06)] hover:bg-[#f7f5f2] hover:text-navy`;
 }
 
@@ -250,7 +250,7 @@ function MobileRevealNav({
                 className="shrink-0 border-t border-border bg-white px-5 py-4 pb-[calc(1.25rem+env(safe-area-inset-bottom,0px))] shadow-[0_-8px_24px_rgba(0,1,127,0.06)]"
               >
                 <Link
-                  className="flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-br from-petal to-[#e01820] px-6 py-3.5 font-display text-[0.9375rem] font-semibold text-white no-underline shadow-[0_4px_14px_rgba(255,30,38,0.28)]"
+                  className="flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-br from-petal to-petal-hover px-6 py-3.5 font-display text-[0.9375rem] font-semibold text-white no-underline shadow-[0_4px_14px_rgba(245,0,0,0.28)]"
                   to="/contactus"
                   onClick={closeMenu}
                 >
@@ -267,7 +267,6 @@ function MobileRevealNav({
 
 function Navbar() {
   const [expanded, setExpanded] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [mobileOpenGroups, setMobileOpenGroups] = useState<Set<string>>(new Set());
   const closeDropdownTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -313,22 +312,6 @@ function Navbar() {
   }, [expanded]);
 
   useEffect(() => {
-    let scrolled = window.scrollY > 12;
-    setScrolled(scrolled);
-
-    const onScroll = () => {
-      const next = window.scrollY > 12;
-      if (next !== scrolled) {
-        scrolled = next;
-        setScrolled(next);
-      }
-    };
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  useEffect(() => {
     document.body.style.overflow = expanded ? "hidden" : "";
     return () => {
       document.body.style.overflow = "";
@@ -356,12 +339,9 @@ function Navbar() {
     location.pathname.startsWith(p),
   );
 
-  const isHome = location.pathname === "/";
-  const heroNav = isHome && !scrolled && !expanded;
-
   const contactCta = (
     <Link
-      className="inline-flex items-center gap-2 rounded-full bg-gradient-to-br from-petal to-[#e01820] px-5 py-2.5 font-display text-sm font-semibold text-white no-underline shadow-[0_4px_14px_rgba(255,30,38,0.28)] transition hover:-translate-y-0.5 hover:shadow-[0_8px_22px_rgba(255,30,38,0.38)]"
+      className="inline-flex items-center gap-2 rounded-full bg-gradient-to-br from-petal to-petal-hover px-5 py-2.5 font-display text-sm font-semibold text-white no-underline shadow-[0_4px_14px_rgba(245,0,0,0.28)] transition hover:-translate-y-0.5 hover:shadow-[0_8px_22px_rgba(245,0,0,0.38)]"
       to="/contactus"
       onClick={closeMenu}
     >
@@ -383,15 +363,17 @@ function Navbar() {
   return (
     <header className="fixed left-0 right-0 top-0 z-[1000]">
       <div
-        className={`relative z-[1003] min-h-[var(--nav-height)] overflow-visible border-b transition-all duration-300 ${
-          heroNav
-            ? "border-transparent bg-transparent"
-            : "border-white/40 bg-white/50 shadow-[0_4px_24px_rgba(0,1,127,0.06)] backdrop-blur-lg"
-        }`}
+        className="relative z-[1003] min-h-[var(--nav-height)] overflow-visible border-b border-border/80 bg-white shadow-[0_4px_24px_rgba(0,1,127,0.06)]"
       >
         <div className="mx-auto flex min-h-[var(--nav-height)] max-w-7xl items-center gap-4 overflow-visible px-5 sm:px-8 lg:px-10 max-lg:pr-[max(1.25rem,env(safe-area-inset-right,0px))]">
           <Link to="/" className="flex shrink-0 items-center no-underline" onClick={closeMenu}>
-            <LazyImage src={siteLogoUrl} alt="Qbit Force Quantum" eager optimizeWidth={320} className="block h-11 w-auto transition hover:scale-[1.03] sm:h-12" />
+            <LazyImage
+              src={siteLogoUrl}
+              alt="Qbit Force Quantum"
+              eager
+              optimizeWidth={320}
+              className="block h-11 w-auto transition hover:scale-[1.03] sm:h-12"
+            />
           </Link>
 
           <MobileMenuToggle expanded={expanded} onClick={() => setExpanded(!expanded)} />

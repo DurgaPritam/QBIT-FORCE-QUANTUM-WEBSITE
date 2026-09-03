@@ -199,7 +199,7 @@ function VideosHomeSection() {
         className="pointer-events-none absolute inset-0 opacity-30"
         style={{
           backgroundImage:
-            "radial-gradient(circle at 80% 20%, rgba(255,30,38,0.2) 0%, transparent 50%), radial-gradient(circle at 10% 80%, rgba(93,143,216,0.15) 0%, transparent 45%)",
+            "radial-gradient(circle at 80% 20%, rgba(245,0,0,0.2) 0%, transparent 50%), radial-gradient(circle at 10% 80%, rgba(93,143,216,0.15) 0%, transparent 45%)",
         }}
         aria-hidden
       />

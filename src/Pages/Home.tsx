@@ -1,6 +1,7 @@
 import Hero from "../Components/Hero.tsx";
 import CompanyStory from "../Components/CompanyStory.tsx";
 import PeoplePrinciplesSection from "../Components/PeoplePrinciplesSection.tsx";
+import JourneySection from "../Components/JourneySection.tsx";
 import LinkedBlogsSection from "../Components/LinkedBlogsSection.tsx";
 
 import GalleryHomeSection from "../Components/GalleryHomeSection.tsx";
@@ -16,18 +17,16 @@ function Home() {
       {/* Hero + Company Story — normal scroll (no sticky pin) */}
       <div className="relative bg-surface-warm">
         <Hero />
-        <div className="relative z-10 -mt-4 overflow-hidden rounded-t-[2rem] bg-white sm:-mt-6 sm:rounded-t-[2.5rem]">
-          <div
-            className="mx-auto mt-4 h-1.5 w-16 rounded-full bg-gradient-to-r from-petal via-blue-light to-petal"
-            aria-hidden
-          />
+        <div className="relative z-10 bg-white">
           <CompanyStory />
         </div>
       </div>
 
       <PeoplePrinciplesSection />
 
-      <LinkedBlogsSection />
+      <JourneySection />
+
+      {/* <LinkedBlogsSection /> */}
 
       <GalleryHomeSection />
 

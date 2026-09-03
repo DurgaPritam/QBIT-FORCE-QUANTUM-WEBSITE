@@ -72,7 +72,7 @@ export default function AdminHome() {
 
   return (
     <div className="mx-auto max-w-6xl space-y-6 sm:space-y-8">
-      <section className="overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-petal via-[#e01820] to-[#9a1018] p-5 text-white shadow-lg sm:rounded-3xl sm:p-8">
+      <section className="overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-petal via-petal-hover to-[#9a0000] p-5 text-white shadow-lg sm:rounded-3xl sm:p-8">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <p className="font-display text-xs font-bold uppercase tracking-[0.2em] text-white/60">Admin CMS</p>

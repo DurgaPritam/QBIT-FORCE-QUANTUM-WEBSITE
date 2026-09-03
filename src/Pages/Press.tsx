@@ -60,7 +60,7 @@ function Press() {
           <p className="mb-5 text-sm text-white/90 sm:text-lg">Media & press enquiries</p>
           <Link
             to="/contactus"
-            className="inline-flex items-center justify-center gap-2 rounded-full bg-petal px-6 py-3 font-display text-sm font-semibold text-white transition-colors duration-200 hover:bg-[#e01820] sm:px-7"
+            className="inline-flex items-center justify-center gap-2 rounded-full bg-petal px-6 py-3 font-display text-sm font-semibold text-white transition-colors duration-200 hover:bg-petal-hover sm:px-7"
           >
             Contact Media Relations
           </Link>

@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 @theme {
-  --color-petal: #ff1e26;
-  --color-petal-hover: #e01820;
-  --color-navy: #00017f;
+  --color-petal: #f50000;
+  --color-petal-hover: #d40000;
+  --color-navy: #000080;
   --color-navy-light: #1a2d8f;
   --color-deep: #000010;
   --color-mid: #000b29;

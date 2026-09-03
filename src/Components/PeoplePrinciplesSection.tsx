@@ -11,7 +11,7 @@ import { cloudinaryImageUrl } from "../utils/cloudinary";
 const solidStyles = {
   navy: "bg-navy text-white",
   petal: "bg-petal text-white",
-  light: "bg-[#e8e6e3] text-text",
+  light: "bg-slate text-white",
 };
 
 const panelHeight =

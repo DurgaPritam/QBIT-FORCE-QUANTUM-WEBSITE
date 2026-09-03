@@ -65,13 +65,8 @@ export const teamPhotoUrls = {
     "https://res.cloudinary.com/dps46p3m8/image/upload/v1782236927/WhatsApp_Image_2026-06-23_at_11.14.36_PM_1_zn4mte.jpg",
 } as const;
 
-export type HeroSlide = {
-  id: string;
-  type: "image" | "video";
-  src: string;
-  alt: string;
-  poster?: string;
-};
+export const heroVideoUrl =
+  "https://res.cloudinary.com/dps46p3m8/video/upload/v1788283330/quantum-machine-right-side-4k_QNlDGHJk_online-video-cutter.com_cdj0sj.mp4";
 
 export type MediaImage = {
   id: string;
@@ -82,32 +77,6 @@ export type MediaImage = {
   /** Lower value appears first on the site (1 = first). */
   sortOrder?: number;
 };
-
-export const heroSlides: HeroSlide[] = [
-  
-  {
-    id: "hero-4",
-    type: "image",
-    src: "https://res.cloudinary.com/dps46p3m8/image/upload/v1780935950/Copy_of_IMG_20260414_161438_zed6bs.jpg",
-    alt: "Qbit Force quantum hardware platform",
-  },
-  {
-    id: "hero-video",
-    type: "video",
-    src: "https://res.cloudinary.com/dps46p3m8/video/upload/v1780935951/WhatsApp_Video_2026-06-07_at_7.40.37_PM_ij7kaw.mp4",
-    poster:
-      "https://res.cloudinary.com/dps46p3m8/image/upload/v1780935950/Copy_of_IMG_20260414_161438_zed6bs.jpg",
-    alt: "Qbit Force facility walkthrough",
-  },
-  
-  {
-    id: "hero-1",
-    type: "image",
-    src: "https://res.cloudinary.com/dps46p3m8/image/upload/v1780935959/Copy_of_IMG_20260414_144515_wl0abz.jpg",
-    alt: "Qbit Force quantum facility",
-  },
-  
-];
 
 export const companyStoryImages: MediaImage[] = [
   {

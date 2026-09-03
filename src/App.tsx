@@ -4,7 +4,6 @@ import MainContent, { useRouteLoading } from "./Layout/MainContent.tsx";
 import LoadingScreen from "./Components/LoadingScreen.tsx";
 import ScrollToTop from "./Components/ScrollToTop.tsx";
 import PageMeta from "./Components/PageMeta.tsx";
-import CursorDotTrail from "./Components/CursorDotTrail.tsx";
 
 const Home = lazy(() => import("./Pages/Home.tsx"));
 const AboutUs = lazy(() => import("./Pages/AboutUs.tsx"));
@@ -66,7 +65,6 @@ function AppShell() {
     <>
       <ScrollToTop />
       <PageMeta />
-      {!isAdmin && <CursorDotTrail />}
       <Suspense fallback={isAdmin ? <AdminFallback /> : null}>
         {isAdmin ? <AdminApp /> : <PublicApp />}
       </Suspense>

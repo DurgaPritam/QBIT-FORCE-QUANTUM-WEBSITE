@@ -628,7 +628,7 @@ export default function EditorialContactForm({ onSubmitted }: Props) {
                 whileTap={{ scale: submitting ? 1 : 0.98 }}
                 transition={springSnappy}
                 disabled={!canSubmit || submitting}
-                className="cursor-pointer rounded-full bg-gradient-to-r from-petal to-[#e01820] px-8 py-3 font-display text-sm font-semibold text-white shadow-[0_6px_20px_rgba(255,30,38,0.3)] transition hover:shadow-[0_10px_28px_rgba(255,30,38,0.4)] disabled:cursor-not-allowed disabled:opacity-40"
+                className="cursor-pointer rounded-full bg-gradient-to-r from-petal to-petal-hover px-8 py-3 font-display text-sm font-semibold text-white shadow-[0_6px_20px_rgba(245,0,0,0.3)] transition hover:shadow-[0_10px_28px_rgba(245,0,0,0.4)] disabled:cursor-not-allowed disabled:opacity-40"
               >
                 {submitting ? "Sending…" : "Submit Enquiry →"}
               </motion.button>
