@@ -59,3 +59,19 @@ export const journeySteps: JourneyStep[] = [
     accent: "#0d9488",
   },
 ];
+
+export type ScrollTimelineItem = {
+  year: string;
+  eyebrow: string;
+  desc: string;
+  bg: string;
+  fg: string;
+};
+
+export const scrollTimelineItems: ScrollTimelineItem[] = journeySteps.map((step) => ({
+  year: step.date.includes("2025") ? "2025" : step.date === "Ongoing" ? "NOW" : "2026",
+  eyebrow: `${step.step}  ·  ${step.date}`,
+  desc: `${step.title}. ${step.subtitle}`,
+  bg: step.accent,
+  fg: "#ffffff",
+}));
