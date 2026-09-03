@@ -2,7 +2,7 @@ import Hero from "../Components/Hero.tsx";
 import CompanyStory from "../Components/CompanyStory.tsx";
 import PeoplePrinciplesSection from "../Components/PeoplePrinciplesSection.tsx";
 import JourneySection from "../Components/JourneySection.tsx";
-import LinkedBlogsSection from "../Components/LinkedBlogsSection.tsx";
+
 
 import GalleryHomeSection from "../Components/GalleryHomeSection.tsx";
 import VideosHomeSection from "../Components/VideosHomeSection.tsx";
