@@ -231,7 +231,7 @@ function AboutUs() {
                   <motion.img
                     src={indiaMapUrl}
                     alt="India map — Qbit Force Amaravati, Andhra Pradesh"
-                    className="aspect-[4/5] w-full object-cover sm:aspect-[3/4]"
+                    className="aspect-[4/5] w-full object-fit sm:aspect-[3/4]"
                     loading="lazy"
                     whileHover={{ scale: 1.03 }}
                     transition={{ duration: 0.6, ease: easeOut }}

@@ -10,7 +10,7 @@ export const loadingScreenLogoUrl =
   "https://res.cloudinary.com/dps46p3m8/image/upload/v1781192857/favIcon_ox2js2.png";
 
 export const indiaMapUrl =
-  "https://res.cloudinary.com/dps46p3m8/image/upload/v1781192856/Indiamap-DA7EbyRf_eu2u3f.jpg";
+  "https://res.cloudinary.com/dps46p3m8/image/upload/v1788537972/WhatsApp_Image_2026-09-01_at_18.40.32_gz2al2.jpg";
 
 /** Partner / client logos — update URLs here */
 export const partnerLogos = [
@@ -18,7 +18,7 @@ export const partnerLogos = [
     id: "partner-techqubit",
     name: "TechQubit",
     imageUrl:
-      "https://res.cloudinary.com/dps46p3m8/image/upload/v1781192857/TechQubit-luAw_Uld_vrcxzj.jpg",
+      "https://res.cloudinary.com/dps46p3m8/image/upload/v1788537972/qubitech_logo_gtbbwk.png",
   },
   {
     id: "partner-amber",
