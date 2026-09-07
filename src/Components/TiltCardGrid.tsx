@@ -26,6 +26,8 @@ export type TiltCardItem = {
   descriptionLines?: number;
   textCenter?: boolean;
   imagePosition?: "top" | "center";
+  /** When set, clicking the photo opens this URL (e.g. LinkedIn). */
+  href?: string;
 };
 
 type TiltCard3DProps = TiltCardItem;
@@ -40,6 +42,7 @@ function TiltCard3D({
   descriptionLines,
   textCenter = false,
   imagePosition = "top",
+  href,
 }: TiltCard3DProps) {
   const ref = useRef<HTMLDivElement>(null);
   const tiltRef = useRef({ x: 0, y: 0 });
@@ -115,15 +118,36 @@ function TiltCard3D({
       className="flex h-full w-full min-w-0 cursor-pointer flex-col overflow-hidden rounded-2xl bg-white shadow-[0_8px_32px_rgba(0,1,127,0.1)] transition-shadow duration-200 hover:shadow-[0_16px_48px_rgba(0,1,127,0.16)]"
     >
       <div className={`relative w-full shrink-0 overflow-hidden bg-slate-100 ${imageAspect}`}>
-        <LazyImage
-          src={image}
-          alt={imageAlt}
-          draggable={false}
-          optimizeWidth={640}
-          className={`pointer-events-none absolute inset-0 h-full w-full object-cover ${
-            imagePosition === "center" ? "object-center" : "object-top"
-          }`}
-        />
+        {href ? (
+          <a
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`View ${title} on LinkedIn`}
+            className="absolute inset-0 block"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <LazyImage
+              src={image}
+              alt={imageAlt}
+              draggable={false}
+              optimizeWidth={640}
+              className={`pointer-events-none absolute inset-0 h-full w-full object-cover transition duration-300 hover:scale-[1.03] ${
+                imagePosition === "center" ? "object-center" : "object-top"
+              }`}
+            />
+          </a>
+        ) : (
+          <LazyImage
+            src={image}
+            alt={imageAlt}
+            draggable={false}
+            optimizeWidth={640}
+            className={`pointer-events-none absolute inset-0 h-full w-full object-cover ${
+              imagePosition === "center" ? "object-center" : "object-top"
+            }`}
+          />
+        )}
       </div>
       <div
         className={`flex min-h-0 flex-1 flex-col justify-start gap-1.5 border-t border-border/40 bg-white p-4 sm:p-5 ${

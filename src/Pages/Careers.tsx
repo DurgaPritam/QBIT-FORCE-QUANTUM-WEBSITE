@@ -13,29 +13,7 @@ const perks = [
 ];
 
 const openRoles = [
-  {
-    id: "quantum-device-engineer",
-    title: "Quantum Device Engineer",
-    summary:
-      "Design and simulate quantum microwave hardware — processors, resonators, and critical components — using KLayout and EM tools to turn ideas into manufacturable quantum devices.",
-    department: "Quantum Hardware Design",
-    type: "Full Time",
-    location: "Remote / Amaravati (AP)",
-    experience: "Immediate joining · KLayout required",
-    immediate: true,
-    highlights: [
-      "KLayout for 2D/3D layout, DRC, LVS & GDSII",
-      "EM simulation (HFSS, Sonnet, COMSOL)",
-      "Superconducting quantum hardware & microwave engineering",
-      "Collaborate with fabrication and measurement teams",
-      "Design documentation and version control",
-    ],
-    applyEmail: CONTACT_EMAIL,
-    imageUrl:
-      "https://res.cloudinary.com/dps46p3m8/image/upload/v1783745584/1783182288702_xmfzg2.jpg",
-    linkedInUrl:
-      "https://www.linkedin.com/posts/qbit-force_hiring-quantumcomputing-quantumhardware-activity-7479208610372243456-0V5S",
-  },
+  
   {
     id: "quantum-control-software-engineer",
     title: "Full-Stack Quantum Control Software Engineer",

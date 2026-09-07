@@ -442,6 +442,7 @@ function AboutUs() {
                 description: leaderBios[member.id],
                 imageAspect: "aspect-[3/4]",
                 descriptionLines: 3,
+                href: member.linkedin,
               }))}
             />
           </div>
@@ -482,6 +483,7 @@ function AboutUs() {
               imageAspect: "aspect-square",
               imagePosition: "center",
               textCenter: true,
+              href: member.linkedin,
             }))}
           />
         </div>
