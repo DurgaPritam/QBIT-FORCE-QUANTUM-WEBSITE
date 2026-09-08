@@ -14,28 +14,7 @@ const perks = [
 
 const openRoles = [
   
-  {
-    id: "quantum-control-software-engineer",
-    title: "Full-Stack Quantum Control Software Engineer",
-    summary:
-      "Develop quantum control platforms, experiment orchestration systems, calibration frameworks, and developer APIs that bridge quantum algorithms with real-world quantum hardware.",
-    department: "Quantum Control Software",
-    type: "Full Time",
-    location: "Amaravati Quantum Valley",
-    experience: "2+ years · BS / MS / PhD",
-    highlights: [
-      "Python APIs, SDKs, and backend services",
-      "Experiment orchestration & pulse scheduling",
-      "Calibration automation & hardware integration",
-      "Linux systems, C/C++, Git & CI/CD",
-      "FPGA integration & performance optimization",
-    ],
-    applyEmail: CONTACT_EMAIL,
-    imageUrl:
-      "https://res.cloudinary.com/dps46p3m8/image/upload/v1782465512/1781677755188_om6awa.jpg",
-    linkedInUrl:
-      "https://www.linkedin.com/posts/qbit-force_qbitforcequantum-hiring-quantumcomputing-activity-7472898142393229312-8caK/",
-  },
+  
   {
     id: "electronics-engineer",
     title: "Electronics Engineer (Quantum Computers)",

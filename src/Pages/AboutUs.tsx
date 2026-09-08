@@ -79,7 +79,6 @@ const marqueeItems = [
   "Cryogenics",
   "Superconducting Qubits",
   "White-Box Platform",
-  "Microfabrication",
   "National Quantum Mission",
   "Built in Amaravati",
   "Open Access",
